@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,12 +15,12 @@
     <div class="container-fluid text-center">
       <div id="banner" class="text-center">
         <div id="banner-left">
-          <img src="assets/logo.png" alt="Sissynator Logo" id="banner-logo">
+          <img src="assets/logo.png" alt="Logo de Sissynator" id="banner-logo">
           <h1 id="banner-title">Sissynator</h1>
         </div>
         <div id="banner-right">
-          <button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#documentation-modal">Documentation</button>
-          <button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#import-link-modal">Import Settings</button>
+          <button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#documentation-modal">Documentación</button>
+          <button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#import-link-modal">Importar configuración</button>
         </div>
       </div>
 
@@ -29,17 +29,17 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="documentation-modal-label">Documentation</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <h5 class="modal-title" id="documentation-modal-label">Documentación</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
               <ul>
-                <li><a href="https://github.com/sandyslut/conditioning" target="_blank">Original Source Code (by sandyslut)</a></li>
-                <li><a href="https://github.com/girlcrab/conditioning" target="_blank">Modified Source Code (by girlcrab)</a></li>
-                <li><a href="documents/license.html" target="_blank">License Documentation</a></li>
-                <li><a href="documents/original_privacy.html" target="_blank">Original Privacy Policy</a></li>
+                <li><a href="https://github.com/sandyslut/conditioning" target="_blank">Código fuente original (por sandyslut)</a></li>
+                <li><a href="https://github.com/girlcrab/conditioning" target="_blank">Código modificado (por girlcrab)</a></li>
+                <li><a href="documents/license.html" target="_blank">Documentación de la licencia</a></li>
+                <li><a href="documents/original_privacy.html" target="_blank">Política de privacidad original</a></li>
               </ul>
             </div>
           </div>
@@ -51,18 +51,18 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="import-link-modal-label">Import Settings from Link</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <h5 class="modal-title" id="import-link-modal-label">Importar configuración desde enlace</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
-              <label for="import-link-input">Paste your link here:</label>
+              <label for="import-link-input">Pega tu enlace aquí:</label>
               <input type="text" id="import-link-input" class="form-control" placeholder="https://conditioning.sissynator.com/?shuffle=1&bpm=110&next=15">
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary" id="apply-link-button">Apply Settings</button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="apply-link-button">Aplicar configuración</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
             </div>
           </div>
         </div>
@@ -70,9 +70,9 @@
 
       <div id="instructions">
         <ol>
-          <li>Upload a folder containing your images.</li>
-          <li>Set the beats per minute (BPM) and how many beats per image.</li>
-          <li>Click "Start" to begin your session.</li>
+          <li>Sube una carpeta con tus imágenes.</li>
+          <li>Configura los beats por minuto (BPM) y cuántos golpes por imagen.</li>
+          <li>Haz clic en "Iniciar" para comenzar la sesión.</li>
         </ol>
       </div>
 
@@ -80,11 +80,11 @@
         <form class="form-horizontal" autocomplete="off">
           <div id="folder-group" class="form-group">
             <div class="folder-input-container">
-              <label class="btn btn-primary" for="folder-input">Upload Folder</label>
+              <label class="btn btn-primary" for="folder-input">Subir carpeta</label>
               <input type="file" id="folder-input" webkitdirectory directory multiple class="form-control" style="display: none;">
             </div>
             <div class="file-count-container">
-              <span id="file-count" style="color: #EDEDED; font-size: 0.9em;">0 file(s) uploaded</span>
+              <span id="file-count" style="color: #EDEDED; font-size: 0.9em;">0 archivos cargados</span>
             </div>
           </div>
 
@@ -94,25 +94,25 @@
           </div>
 
           <div id="next-group" class="form-group">
-            <label class="control-label" for="next-input">Beats per image:</label>
+            <label class="control-label" for="next-input">Golpes por imagen:</label>
             <input class="form-control" id="next-input" type="number">
           </div>
 
           <div id="mantra-group" class="form-group">
             <div class="mantra-input-container">
               <label class="control-label" for="mantra-input">Mantra:</label>
-              <input class="form-control" id="mantra-input" type="text" placeholder="Enter your mantra">
+              <input class="form-control" id="mantra-input" type="text" placeholder="Escribe tu mantra">
             </div>
             <div class="voice-select-container">
-              <label class="control-label" for="voice-select">Voice:</label>
+              <label class="control-label" for="voice-select">Voz:</label>
               <select class="form-control" id="voice-select">
-                <option value="">Loading voices...</option>
+                <option value="">Cargando voces...</option>
               </select>
             </div>
           </div>
 
           <div id="start-button-group" class="form-group">
-            <button id="start-button" type="button" class="btn btn-primary">Start</button>
+            <button id="start-button" type="button" class="btn btn-primary">Iniciar</button>
           </div>
         </form>
       </div>
@@ -131,11 +131,11 @@
 
     <footer id="footer" class="text-center">
       <div class="footer-links">
-        <h5>Academy Links</h5>
+        <h5>Enlaces de la Academia</h5>
         <ul>
           <li><a href="https://www.reddit.com/r/SissificationAcademy/" target="_blank">Sissification Academy (Reddit)</a></li>
           <li><a href="https://x.com/sissyloverhq" target="_blank">Sissy Lover HQ (Twitter/X)</a></li>
-          <li><a href="https://sissylover.com/" target="_blank">Sissy Lover (Website)</a></li>
+          <li><a href="https://sissylover.com/" target="_blank">Sissy Lover (Sitio web)</a></li>
         </ul>
       </div>
     </footer>
