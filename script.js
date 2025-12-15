@@ -1,71 +1,71 @@
-// Global object to store application state
+// Objeto global para almacenar el estado de la aplicación
 var sissy = {
   tickSound: new Howl({ src: ["assets/tick.mp3"] }),
-  voices: [], // Store available voices
-  urls: [], // Store uploaded image URLs
-  isSpeaking: false, // Track if TTS is speaking
-  metronome: null, // Interval for metronome
-  ttsInterval: null, // Interval for mantra TTS
-  gallery: null, // Blueimp gallery instance
+  voices: [], // Almacena las voces disponibles
+  urls: [], // Almacena las URLs de las imágenes subidas
+  isSpeaking: false, // Indica si el TTS está hablando
+  metronome: null, // Intervalo del metrónomo
+  ttsInterval: null, // Intervalo para el TTS del mantra
+  gallery: null, // Instancia de la galería Blueimp
 };
 
-// Populate the voice dropdown
+// Rellenar el selector de voces
 function populateVoiceList() {
   const voiceSelect = document.getElementById("voice-select");
   sissy.voices = speechSynthesis.getVoices();
 
-  // Clear existing options
+  // Limpiar opciones existentes
   voiceSelect.innerHTML = "";
 
-  // Populate the dropdown with available voices
+  // Rellenar el desplegable con las voces disponibles
   sissy.voices.forEach((voice, index) => {
     const option = document.createElement("option");
     option.value = index;
-    option.textContent = `${voice.name} (${voice.lang})${voice.default ? " [default]" : ""}`;
+    option.textContent = `${voice.name} (${voice.lang})${voice.default ? " [predeterminada]" : ""}`;
     voiceSelect.appendChild(option);
 
-    // Automatically select Google UK English Female if available
+    // Seleccionar automáticamente Google UK English Female si está disponible
     if (voice.name === "Google UK English Female" && voice.lang === "en-GB") {
       voiceSelect.selectedIndex = index;
     }
   });
 
-  // Default to the first voice if none is selected
+  // Usar la primera voz si ninguna está seleccionada
   if (voiceSelect.selectedIndex === -1) {
     voiceSelect.selectedIndex = 0;
   }
 }
 
-// Ensure voices are loaded (some browsers load them asynchronously)
+// Asegurarse de que las voces estén cargadas (algunos navegadores lo hacen de forma asíncrona)
 if (speechSynthesis.onvoiceschanged !== undefined) {
   speechSynthesis.onvoiceschanged = populateVoiceList;
 } else {
   populateVoiceList();
 }
 
-// Handle folder upload and display file count
+// Manejar la subida de carpetas y mostrar el número de archivos
 function handleFolderUpload(event) {
   const files = event.target.files;
   sissy.urls = Array.from(files).map(file => URL.createObjectURL(file));
 
   const fileCountElement = document.getElementById("file-count");
   if (fileCountElement) {
-    fileCountElement.textContent = `${sissy.urls.length} file(s) uploaded`;
+    fileCountElement.textContent = `${sissy.urls.length} archivo(s) subidos`;
   }
 }
 
-// Utility function to shuffle an array
+// Función auxiliar para mezclar un array aleatoriamente
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+    [array[i], array[j]] = [array[j], array[i]]; // Intercambiar elementos
   }
 }
 
-// Start the slideshow and metronome
+// Iniciar la presentación y el metrónomo
 function start() {
   if (!sissy.urls || sissy.urls.length === 0) {
-    alert("Please upload a folder with images first.");
+    alert("Por favor, sube primero una carpeta con imágenes.");
     return;
   }
 
@@ -73,13 +73,13 @@ function start() {
   const next = parseInt(document.getElementById("next-input").value) || 0;
   const mantra = document.getElementById("mantra-input").value.trim();
 
-  // Shuffle the images
+  // Mezclar las imágenes
   shuffleArray(sissy.urls);
 
   if (bpm > 0) {
     let beatCount = 0;
 
-    // Start the slideshow
+    // Iniciar la presentación
     sissy.gallery = blueimp.Gallery(sissy.urls, {
       onclose: stop,
       onslideend: (index) => {
@@ -90,7 +90,7 @@ function start() {
       },
     });
 
-    // Start the metronome
+    // Iniciar el metrónomo
     sissy.metronome = setInterval(() => {
       sissy.tickSound.play();
       beatCount++;
@@ -102,7 +102,7 @@ function start() {
       }
     }, (60 / bpm) * 1000);
 
-    // Start the mantra TTS
+    // Iniciar el TTS del mantra
     if (mantra) {
       const interval = (60 / bpm) * 1000;
       sissy.ttsInterval = setInterval(() => {
@@ -110,11 +110,11 @@ function start() {
       }, interval);
     }
   } else {
-    alert("Please enter a valid BPM (beats per minute).");
+    alert("Por favor, introduce un BPM válido (pulsos por minuto).");
   }
 }
 
-// Stop the slideshow and metronome
+// Detener la presentación y el metrónomo
 function stop() {
   if (sissy.isSpeaking) {
     const checkSpeakingInterval = setInterval(() => {
@@ -128,7 +128,7 @@ function stop() {
   }
 }
 
-// Finalize the stop process
+// Finalizar el proceso de parada
 function finalizeStop() {
   clearInterval(sissy.metronome);
   clearInterval(sissy.ttsInterval);
@@ -145,7 +145,7 @@ function finalizeStop() {
   }, 100);
 }
 
-// Speak the mantra using TTS
+// Pronunciar el mantra usando TTS
 function speakMantra(mantra) {
   const mantraDisplay = document.getElementById("mantra-display");
   mantraDisplay.style.display = "block";
@@ -170,7 +170,7 @@ function speakMantra(mantra) {
   };
 }
 
-// Apply settings from the URL
+// Aplicar ajustes desde la URL
 function applySettingsFromURL() {
   const params = new URLSearchParams(window.location.search);
 
@@ -185,7 +185,7 @@ function applySettingsFromURL() {
   }
 }
 
-// Apply settings from a provided link
+// Aplicar ajustes desde un enlace proporcionado
 function applySettingsFromLink(link) {
   try {
     const url = new URL(link);
@@ -201,13 +201,13 @@ function applySettingsFromLink(link) {
       document.getElementById("next-input").value = next;
     }
 
-    alert("Settings successfully imported!");
+    alert("¡Configuración importada correctamente!");
   } catch (error) {
-    alert("Invalid link. Please check the format and try again.");
+    alert("Enlace inválido. Revisa el formato e inténtalo de nuevo.");
   }
 }
 
-// Event listeners
+// Eventos
 window.addEventListener("DOMContentLoaded", applySettingsFromURL);
 document.getElementById("folder-input").addEventListener("change", handleFolderUpload);
 document.getElementById("start-button").addEventListener("click", start);
@@ -216,6 +216,6 @@ document.getElementById("apply-link-button").addEventListener("click", () => {
   if (link) {
     applySettingsFromLink(link);
   } else {
-    alert("Please enter a valid link.");
+    alert("Por favor, introduce un enlace válido.");
   }
 });
