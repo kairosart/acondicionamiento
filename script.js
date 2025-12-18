@@ -1,22 +1,31 @@
 /****************************************************
- * ESTADO GLOBAL DE LA APLICACIÓN
+ * DETECCIÓN DE CAPACIDADES
+ ****************************************************/
+const TTS_SUPPORTED = "speechSynthesis" in window;
+
+/****************************************************
+ * ESTADO GLOBAL
  ****************************************************/
 var sissy = {
   tickSound: new Howl({ src: ["assets/tick.mp3"] }),
-  voices: [],            // Voces en español disponibles (filtradas)
-  urls: [],              // URLs de imágenes subidas
-  isSpeaking: false,     // Indica si el TTS está hablando
-  metronome: null,       // Intervalo del metrónomo
-  ttsInterval: null,     // Intervalo del TTS del mantra
-  gallery: null          // Instancia de Blueimp Gallery
+  voices: [],            // Voces en español (filtradas)
+  urls: [],              // URLs de imágenes
+  isSpeaking: false,
+  metronome: null,
+  ttsInterval: null,
+  gallery: null
 };
 
 /****************************************************
- * CARGAR Y FORZAR VOCES EN ESPAÑOL (CORREGIDO)
+ * CARGAR VOCES EN ESPAÑOL (ROBUSTO)
  ****************************************************/
 function populateVoiceList() {
+  if (!TTS_SUPPORTED) return;
+
   const voiceSelect = document.getElementById("voice-select");
   const allVoices = speechSynthesis.getVoices();
+
+  if (!voiceSelect) return;
 
   voiceSelect.innerHTML = "";
   sissy.voices = [];
@@ -26,13 +35,12 @@ function populateVoiceList() {
   allVoices.forEach((voice) => {
     if (voice.lang && voice.lang.startsWith("es")) {
       const option = document.createElement("option");
-      option.value = sissy.voices.length; // índice LOCAL
+      option.value = sissy.voices.length;
       option.textContent = `${voice.name} (${voice.lang})`;
       voiceSelect.appendChild(option);
 
       sissy.voices.push(voice);
 
-      // Prioridad automática
       if (
         voice.name.includes("Google") ||
         voice.name.includes("Microsoft") ||
@@ -46,32 +54,38 @@ function populateVoiceList() {
   if (sissy.voices.length > 0) {
     voiceSelect.selectedIndex = preferredIndex;
   } else {
-    alert("No hay voces en español disponibles en este navegador.");
+    voiceSelect.innerHTML = "<option>No hay voces en español</option>";
   }
 }
 
 // Carga asíncrona de voces
-if (speechSynthesis.onvoiceschanged !== undefined) {
-  speechSynthesis.onvoiceschanged = populateVoiceList;
-} else {
+if (TTS_SUPPORTED) {
+  if (speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = populateVoiceList;
+  }
   populateVoiceList();
 }
 
 /****************************************************
- * SUBIDA DE CARPETA DE IMÁGENES
+ * SUBIDA DE IMÁGENES (CARPETA O MÚLTIPLES)
  ****************************************************/
 function handleFolderUpload(event) {
-  const files = event.target.files;
-  sissy.urls = Array.from(files).map(file => URL.createObjectURL(file));
+  const files = Array.from(event.target.files || []);
+  const MAX_IMAGES = 50;
+
+  sissy.urls = files
+    .filter(f => f.type.startsWith("image/"))
+    .slice(0, MAX_IMAGES)
+    .map(file => URL.createObjectURL(file));
 
   const fileCountElement = document.getElementById("file-count");
   if (fileCountElement) {
-    fileCountElement.textContent = `${sissy.urls.length} archivo(s) subidos`;
+    fileCountElement.textContent = `${sissy.urls.length} imagen(es) cargadas`;
   }
 }
 
 /****************************************************
- * MEZCLAR ARRAY ALEATORIAMENTE
+ * UTILIDAD: MEZCLAR ARRAY
  ****************************************************/
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -81,36 +95,36 @@ function shuffleArray(array) {
 }
 
 /****************************************************
- * INICIAR PRESENTACIÓN + METRÓNOMO + TTS
+ * INICIAR EXPERIENCIA
  ****************************************************/
 function start() {
-  if (!sissy.urls || sissy.urls.length === 0) {
-    alert("Por favor, sube primero una carpeta con imágenes.");
+  // Desbloqueo de audio móvil
+  try {
+    Howler.ctx && Howler.ctx.resume && Howler.ctx.resume();
+  } catch {}
+
+  if (!sissy.urls.length) {
+    alert("Selecciona imágenes primero.");
     return;
   }
 
-  const bpm = parseInt(document.getElementById("beats-input").value) || 0;
-  const next = parseInt(document.getElementById("next-input").value) || 0;
-  const mantra = document.getElementById("mantra-input").value.trim();
+  const bpm = parseInt(document.getElementById("beats-input")?.value, 10) || 0;
+  const next = parseInt(document.getElementById("next-input")?.value, 10) || 0;
+  const mantra = document.getElementById("mantra-input")?.value.trim();
 
   if (bpm <= 0) {
-    alert("Introduce un BPM válido (pulsos por minuto).");
+    alert("Introduce un BPM válido.");
     return;
   }
 
   shuffleArray(sissy.urls);
 
   let beatCount = 0;
+  const intervalMs = (60 / bpm) * 1000;
 
   // Galería
   sissy.gallery = blueimp.Gallery(sissy.urls, {
-    onclose: stop,
-    onslideend: (index) => {
-      if (index === sissy.urls.length - 1 && next > 0) {
-        const remainingBeats = next - (beatCount % next);
-        setTimeout(stop, (60 / bpm) * 1000 * remainingBeats);
-      }
-    }
+    onclose: stop
   });
 
   // Metrónomo
@@ -119,18 +133,17 @@ function start() {
     beatCount++;
 
     if (next > 0 && beatCount % next === 0) {
-      if (sissy.gallery.getIndex() < sissy.urls.length - 1) {
+      if (sissy.gallery && sissy.gallery.getIndex() < sissy.urls.length - 1) {
         sissy.gallery.next();
       }
     }
-  }, (60 / bpm) * 1000);
+  }, intervalMs);
 
-  // TTS del mantra
-  if (mantra) {
-    const interval = (60 / bpm) * 1000;
+  // TTS
+  if (mantra && intervalMs >= 600) {
     sissy.ttsInterval = setInterval(() => {
       speakMantra(mantra);
-    }, interval);
+    }, intervalMs);
   }
 }
 
@@ -153,44 +166,50 @@ function stop() {
 function finalizeStop() {
   clearInterval(sissy.metronome);
   clearInterval(sissy.ttsInterval);
+
   sissy.metronome = null;
   sissy.ttsInterval = null;
 
   const mantraDisplay = document.getElementById("mantra-display");
-  mantraDisplay.style.display = "none";
-  mantraDisplay.textContent = "";
-  mantraDisplay.style.animation = "none";
+  if (mantraDisplay) {
+    mantraDisplay.style.display = "none";
+    mantraDisplay.textContent = "";
+  }
 
-  setTimeout(() => speechSynthesis.cancel(), 100);
+  if (TTS_SUPPORTED) {
+    speechSynthesis.cancel();
+  }
 }
 
 /****************************************************
- * HABLAR MANTRA (ESPAÑOL FORZADO)
+ * HABLAR MANTRA (CON FALLBACK)
  ****************************************************/
 function speakMantra(mantra) {
   const mantraDisplay = document.getElementById("mantra-display");
-  mantraDisplay.style.display = "block";
-  mantraDisplay.textContent = mantra;
+  if (mantraDisplay) {
+    mantraDisplay.style.display = "block";
+    mantraDisplay.textContent = mantra;
+  }
+
+  if (!TTS_SUPPORTED || !sissy.voices.length) return;
 
   const utterance = new SpeechSynthesisUtterance(mantra);
   utterance.lang = "es-ES";
   utterance.volume = 0.8;
-  utterance.rate = 1;
+  utterance.rate = 0.9; // móvil-friendly
   utterance.pitch = 1;
 
   const voiceSelect = document.getElementById("voice-select");
-  const selectedIndex = parseInt(voiceSelect.value, 10);
+  const index = parseInt(voiceSelect?.value, 10);
 
-  if (!isNaN(selectedIndex) && sissy.voices[selectedIndex]) {
-    utterance.voice = sissy.voices[selectedIndex];
+  if (!isNaN(index) && sissy.voices[index]) {
+    utterance.voice = sissy.voices[index];
   }
 
-  speechSynthesis.speak(utterance);
-
   sissy.isSpeaking = true;
-  utterance.onend = () => {
-    sissy.isSpeaking = false;
-  };
+  utterance.onend = () => (sissy.isSpeaking = false);
+
+  speechSynthesis.speak(utterance);
 }
 
 /****************************************************
@@ -199,41 +218,30 @@ function speakMantra(mantra) {
 function applySettingsFromURL() {
   const params = new URLSearchParams(window.location.search);
 
-  const bpm = params.get("bpm");
-  if (bpm !== null) document.getElementById("beats-input").value = bpm;
+  if (params.get("bpm"))
+    document.getElementById("beats-input").value = params.get("bpm");
 
-  const next = params.get("next");
-  if (next !== null) document.getElementById("next-input").value = next;
-}
-
-/****************************************************
- * IMPORTAR AJUSTES DESDE ENLACE
- ****************************************************/
-function applySettingsFromLink(link) {
-  try {
-    const url = new URL(link);
-    const params = new URLSearchParams(url.search);
-
-    const bpm = params.get("bpm");
-    if (bpm !== null) document.getElementById("beats-input").value = bpm;
-
-    const next = params.get("next");
-    if (next !== null) document.getElementById("next-input").value = next;
-
-    alert("¡Configuración importada correctamente!");
-  } catch {
-    alert("Enlace inválido. Revisa el formato.");
-  }
+  if (params.get("next"))
+    document.getElementById("next-input").value = params.get("next");
 }
 
 /****************************************************
  * EVENTOS
  ****************************************************/
-window.addEventListener("DOMContentLoaded", applySettingsFromURL);
-document.getElementById("folder-input").addEventListener("change", handleFolderUpload);
-document.getElementById("start-button").addEventListener("click", start);
-document.getElementById("apply-link-button").addEventListener("click", () => {
-  const link = document.getElementById("import-link-input").value.trim();
-  if (link) applySettingsFromLink(link);
-  else alert("Introduce un enlace válido.");
+window.addEventListener("DOMContentLoaded", () => {
+  applySettingsFromURL();
+
+  document.getElementById("folder-input")
+    ?.addEventListener("change", handleFolderUpload);
+
+  document.getElementById("files-input")
+    ?.addEventListener("change", handleFolderUpload);
+
+  document.getElementById("start-button")
+    ?.addEventListener("click", start);
+});
+
+// iOS: detener si la pestaña se oculta
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) stop();
 });
