@@ -4,7 +4,7 @@
 var app = {
   tickSound: new Howl({
     src: ["assets/tick.mp3"],
-    volume: 1.0
+    volume: 2.0
   }),
 
   mantraSound: null,   // Howler para mantra
