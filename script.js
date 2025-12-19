@@ -2,8 +2,12 @@
  * ESTADO GLOBAL
  ****************************************************/
 var app = {
-  tickSound: new Howl({ src: ["assets/tick.mp3"] }),
-  mantraAudio: null,
+  tickSound: new Howl({
+    src: ["assets/tick.mp3"],
+    volume: 1.0
+  }),
+
+  mantraSound: null,   // Howler para mantra
   urls: [],
   metronome: null,
   gallery: null
@@ -14,7 +18,7 @@ var app = {
  ****************************************************/
 function handleFolderUpload(event) {
   const files = Array.from(event.target.files || []);
-  const MAX_IMAGES = 50;
+  const MAX_IMAGES = 100;
 
   app.urls = files
     .filter(f => f.type.startsWith("image/"))
@@ -23,12 +27,12 @@ function handleFolderUpload(event) {
 
   const count = document.getElementById("file-count");
   if (count) {
-    count.textContent = `${app.urls.length} imagen(es) cargadas`;
+    count.textContent = `${app.urls.length} archivo(s) cargados`;
   }
 }
 
 /****************************************************
- * UTILIDAD: MEZCLAR
+ * UTILIDAD: MEZCLAR ARRAY
  ****************************************************/
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -38,7 +42,7 @@ function shuffleArray(array) {
 }
 
 /****************************************************
- * TEXTO ANIMADO (MANTRA)
+ * MANTRA VISUAL (ANIMADO)
  ****************************************************/
 function showMantra(text) {
   const el = document.getElementById("mantra-display");
@@ -54,26 +58,25 @@ function showMantra(text) {
 }
 
 /****************************************************
- * AUDIO MANTRA
+ * AUDIO MANTRA (HOWLER)
  ****************************************************/
 function playMantraAudio() {
-  if (!app.mantraAudio) return;
+  if (!app.mantraSound) return;
 
-  app.mantraAudio.currentTime = 0;
-  app.mantraAudio.play().catch(() => {});
+  app.mantraSound.stop(); // reiniciar siempre
+  app.mantraSound.play();
 }
 
 /****************************************************
  * INICIAR EXPERIENCIA
  ****************************************************/
 function start() {
-  // desbloqueo audio móvil
-  try {
-    Howler.ctx && Howler.ctx.resume();
-  } catch {}
+  // desbloqueo global de audio
+  Howler.volume(1.0);
+  Howler.mute(false);
 
   if (!app.urls.length) {
-    alert("Selecciona imágenes primero.");
+    alert("Sube una carpeta con imágenes primero.");
     return;
   }
 
@@ -88,22 +91,28 @@ function start() {
 
   shuffleArray(app.urls);
 
-  // preparar audio mantra (opcional)
+  // Preparar audio del mantra (MP3)
   if (mantra) {
-    app.mantraAudio = new Audio("assets/mantra/mantra1.mp3");
+    app.mantraSound = new Howl({
+      src: ["assets/mantra/mantra1.mp3"],
+      volume: 1.0,
+      preload: true,
+      html5: true   // 🔑 🔑 🔑 CLAVE ABSOLUTA
+    });
+
   } else {
-    app.mantraAudio = null;
+    app.mantraSound = null;
   }
 
   let beatCount = 0;
   const intervalMs = (60 / bpm) * 1000;
 
-  // galería
+  // Iniciar galería
   app.gallery = blueimp.Gallery(app.urls, {
     onclose: stop
   });
 
-  // metrónomo principal
+  // Metrónomo principal
   app.metronome = setInterval(() => {
     app.tickSound.play();
     beatCount++;
@@ -128,6 +137,10 @@ function stop() {
   clearInterval(app.metronome);
   app.metronome = null;
 
+  if (app.mantraSound) {
+    app.mantraSound.stop();
+  }
+
   const el = document.getElementById("mantra-display");
   if (el) {
     el.style.display = "none";
@@ -136,7 +149,7 @@ function stop() {
 }
 
 /****************************************************
- * AJUSTES DESDE URL
+ * AJUSTES DESDE URL (?bpm=60&next=4)
  ****************************************************/
 function applySettingsFromURL() {
   const params = new URLSearchParams(window.location.search);
@@ -159,14 +172,11 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("folder-input")
     ?.addEventListener("change", handleFolderUpload);
 
-  document.getElementById("files-input")
-    ?.addEventListener("change", handleFolderUpload);
-
   document.getElementById("start-button")
     ?.addEventListener("click", start);
 });
 
-// seguridad móvil
+// Seguridad móvil: parar al ocultar pestaña
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) stop();
 });
