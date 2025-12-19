@@ -95,7 +95,7 @@ function start() {
   if (mantra) {
     app.mantraSound = new Howl({
       src: ["assets/mantra/mantra1.mp3"],
-      volume: 0.35,
+      volume: 0.15,
       preload: true,
       html5: true   // 🔑 🔑 🔑 CLAVE ABSOLUTA
     });
