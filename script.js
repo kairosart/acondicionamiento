@@ -1,82 +1,144 @@
 var app = {
-  tickSound: new Howl({src:["assets/tick.mp3"], volume:1}),
+  tickSound: new Howl({ src: ["assets/tick.mp3"], volume: 1.0 }),
   mantraSound: null,
   urls: [],
   metronome: null,
-  gallery: null,
-  isRunning: false
+  isRunning: false  // NUEVO FLAG
 };
 
-document.getElementById("folder-input").addEventListener("change", e=>{
-  const files = Array.from(e.target.files||[]);
-  app.urls = files.filter(f=>f.type.startsWith("image/")).map(f=>URL.createObjectURL(f));
-  document.getElementById("file-count").textContent = `${app.urls.length} archivo(s) cargados`;
-});
+function handleFolderUpload(event) {
+  const files = Array.from(event.target.files || []);
+  const MAX_IMAGES = 100;
+  app.urls = files.filter(f => f.type.startsWith("image/"))
+                  .slice(0, MAX_IMAGES)
+                  .map(f => URL.createObjectURL(f));
+  const count = document.getElementById("file-count");
+  if (count) count.textContent = `${app.urls.length} archivo(s) cargados`;
+}
 
-function showMantra(text){
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function showMantra(text) {
   const el = document.getElementById("mantra-display");
-  if(!el) return;
-  el.style.display="block";
-  el.textContent=text;
+  if (!el) return;
+  el.style.display = "block";
+  el.textContent = text;
+  el.style.animation = "none";
+  void el.offsetHeight;
+  el.style.animation = "";
 }
 
-function playMantraAudio(){ if(app.mantraSound) app.mantraSound.play(); }
+function playMantraAudio() {
+  if (!app.mantraSound) return;
+  app.mantraSound.stop();
+  app.mantraSound.play();
+}
 
-function start(){
-  if(app.isRunning) return;
-  app.isRunning=true;
+function openGallery() {
+  if (!app.urls.length) return;
 
-  if(!app.urls.length){ alert("Sube imágenes primero"); app.isRunning=false; return; }
+  new blueimp.Gallery(app.urls, {
+    carousel: false,
+    closeOnEscape: true,
+    closeOnSlideClick: true,
+    onclose: () => {
+      stopSession();
+    }
+  });
+}
 
-  const bpm=parseInt(document.getElementById("beats-input").value)||0;
-  const next=parseInt(document.getElementById("next-input").value)||0;
-  const mantra=document.getElementById("mantra-input").value.trim();
-  const loading=document.getElementById("loading-screen");
-  loading.style.display="flex";
+function start() {
+  if (app.isRunning) return; // No iniciar varias veces
+  app.isRunning = true;
 
-  if(mantra){
-    app.mantraSound=new Howl({
-      src:["assets/mantra/mantra1.mp3"],
-      volume: parseFloat(document.getElementById("volume-mantra").value),
-      preload:true,
-      html5:true,
-      onload:()=>{ loading.style.display="none"; iniciarSesion(bpm,next,mantra); }
+  if (!app.urls.length) {
+    alert("Sube una carpeta con imágenes primero.");
+    app.isRunning = false;
+    return;
+  }
+
+  const bpm = parseInt(document.getElementById("beats-input")?.value, 10) || 0;
+  const next = parseInt(document.getElementById("next-input")?.value, 10) || 0;
+  const mantra = document.getElementById("mantra-input")?.value.trim();
+
+  if (bpm <= 0) {
+    alert("Introduce un BPM válido.");
+    app.isRunning = false;
+    return;
+  }
+
+  shuffleArray(app.urls);
+
+  if (mantra) {
+    app.mantraSound = new Howl({
+      src: ["assets/mantra/mantra1.mp3"],
+      volume: 0.15,
+      preload: true,
+      html5: true
     });
-  }else{ loading.style.display="none"; iniciarSesion(bpm,next,mantra); }
-}
+  } else {
+    app.mantraSound = null;
+  }
 
-function iniciarSesion(bpm,next,mantra){
-  app.gallery=blueimp.Gallery(app.urls,{onclose:stop});
+  let beatCount = 0;
+  const intervalMs = (60 / bpm) * 1000;
 
-  let beatCount=0;
-  const intervalMs=(60/bpm)*1000;
+  openGallery();
 
-  // Primer tick inmediato
-  app.tickSound.volume(parseFloat(document.getElementById("volume-tick").value));
-  app.tickSound.play();
-  if(mantra){ showMantra(mantra); playMantraAudio(); }
-  beatCount++;
-
-  app.metronome=setInterval(()=>{
-    if(!app.isRunning) return;
-    app.tickSound.volume(parseFloat(document.getElementById("volume-tick").value));
+  app.metronome = setInterval(() => {
+    if (!app.isRunning) return; // ⚠️ Check flag
     app.tickSound.play();
     beatCount++;
-    if(mantra){ showMantra(mantra); playMantraAudio(); }
-    if(next>0 && beatCount%next===0 && app.gallery) app.gallery.next();
+
+    if (mantra) {
+      showMantra(mantra);
+      playMantraAudio();
+    }
+
+    if (next > 0 && beatCount % next === 0) {
+      const galleryEl = document.querySelector(".blueimp-gallery");
+      if (galleryEl && galleryEl.classList.contains("blueimp-gallery")) {
+        const event = new Event("next");
+        galleryEl.dispatchEvent(event);
+      }
+    }
   }, intervalMs);
 }
 
-function stop(){
-  app.isRunning=false;
-  clearInterval(app.metronome);
-  if(app.mantraSound) app.mantraSound.stop();
-  const el=document.getElementById("mantra-display");
-  if(el){ el.style.display="none"; el.textContent=""; }
+function stopSession() {
+  app.isRunning = false; // Desactivar flag
+
+  if (app.metronome) {
+    clearInterval(app.metronome);
+    app.metronome = null;
+  }
+
+  if (app.mantraSound) app.mantraSound.stop();
+
+  const el = document.getElementById("mantra-display");
+  if (el) {
+    el.style.display = "none";
+    el.textContent = "";
+  }
 }
 
-document.getElementById("start-button").addEventListener("click",start);
-document.getElementById("volume-tick").addEventListener("input", e=>{ app.tickSound.volume(parseFloat(e.target.value)); });
-document.getElementById("volume-mantra").addEventListener("input", e=>{ if(app.mantraSound) app.mantraSound.volume(parseFloat(e.target.value)); });
+function applySettingsFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("bpm")) document.getElementById("beats-input").value = params.get("bpm");
+  if (params.get("next")) document.getElementById("next-input").value = params.get("next");
+}
 
-document.addEventListener("visibilitychange", ()=>{ if(document.hidden) stop(); });
+window.addEventListener("DOMContentLoaded", () => {
+  applySettingsFromURL();
+  document.getElementById("folder-input")?.addEventListener("change", handleFolderUpload);
+  document.getElementById("start-button")?.addEventListener("click", start);
+});
+
+// Seguridad: parar al ocultar pestaña o cerrar ventana
+document.addEventListener("visibilitychange", () => { if (document.hidden) stopSession(); });
+window.addEventListener("beforeunload", stopSession);
