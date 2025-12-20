@@ -1,177 +1,141 @@
-/****************************************************
- * ESTADO GLOBAL
- ****************************************************/
-var app = {
-  tickSound: new Howl({ src: ["assets/tick.mp3"], volume: 1.0, html5: true }),
-  mantraSound: null,
-  urls: [],
-  metronome: null,
-  gallery: null,
-  bpm: 0,
-  next: 0,
-  beatCount: 0,
-  mantra: "",
-};
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sissymax</title>
 
-/****************************************************
- * SPINNER DE CARGA
- ****************************************************/
-function showLoading(show) {
-  let el = document.getElementById("loading-screen");
-  if (!el) {
-    el = document.createElement("div");
-    el.id = "loading-screen";
-    el.style.cssText = `
-      position: fixed;
-      top:0; left:0; right:0; bottom:0;
-      background: rgba(0,0,0,0.7);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 999999;
-    `;
-    el.innerHTML = `<div class="spinner" style="
-      border: 8px solid #f3f3f3;
-      border-top: 8px solid #D48ACB;
-      border-radius: 50%;
-      width: 80px;
-      height: 80px;
-      animation: spin 1s linear infinite;
-    "></div>`;
-    document.body.appendChild(el);
+  <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon">
 
-    const style = document.createElement("style");
-    style.innerHTML = `
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-    `;
-    document.head.appendChild(style);
-  }
-  el.style.display = show ? "flex" : "none";
-}
+  <!-- Blueimp Gallery -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/blueimp-gallery/2.29.0/css/blueimp-gallery.min.css">
 
-/****************************************************
- * SUBIDA DE IMÁGENES
- ****************************************************/
-function handleFolderUpload(event) {
-  const files = Array.from(event.target.files || []);
-  app.urls = files.filter(f => f.type.startsWith("image/"))
-                  .map(f => URL.createObjectURL(f));
-  document.getElementById("file-count").textContent = `${app.urls.length} archivo(s) cargados`;
-}
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
 
-/****************************************************
- * MEZCLAR ARRAY
- ****************************************************/
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-}
+  <!-- Tus estilos -->
+  <link rel="stylesheet" href="styles.css">
 
-/****************************************************
- * MANTRA VISUAL
- ****************************************************/
-function showMantra(text) {
-  const el = document.getElementById("mantra-display");
-  if (!el) return;
-  el.style.display = "block";
-  el.textContent = text;
-}
-
-/****************************************************
- * DETENER TODO
- ****************************************************/
-function stop() {
-  clearInterval(app.metronome);
-  app.metronome = null;
-
-  if (app.mantraSound) app.mantraSound.stop();
-  if (app.tickSound) app.tickSound.stop();
-
-  const el = document.getElementById("mantra-display");
-  if (el) el.style.display = "none";
-
-  if (app.gallery) {
-    app.gallery.close();
-    app.gallery = null;
-  }
-}
-
-/****************************************************
- * INICIAR SESIÓN
- ****************************************************/
-function iniciarSesion() {
-  stop(); // parar cualquier sesión previa
-
-  app.beatCount = 0;
-
-  app.gallery = blueimp.Gallery(app.urls, {
-    onclose: stop
-  });
-
-  const intervalMs = (60 / app.bpm) * 1000;
-
-  app.metronome = setInterval(() => {
-    app.tickSound.play();
-    app.beatCount++;
-
-    if (app.mantraSound) {
-      showMantra(app.mantra);
-      app.mantraSound.play();
+  <!-- Animación mantra (fallback universal) -->
+  <style>
+    #mantra-display {
+      display: none;
+      font-size: 2.2em;
+      font-weight: bold;
+      margin: 30px auto;
+      color: #ffffff;
+      animation: pulse 1.5s ease-in-out infinite;
     }
 
-    if (app.next > 0 && app.beatCount % app.next === 0) {
-      if (app.gallery && app.gallery.getIndex() < app.urls.length - 1) {
-        app.gallery.next();
-      }
+    @keyframes pulse {
+      0% { opacity: 0.3; transform: scale(0.98); }
+      50% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0.3; transform: scale(0.98); }
     }
-  }, intervalMs);
-}
+  </style>
 
-/****************************************************
- * BOTÓN INICIAR
- ****************************************************/
-document.getElementById("start-button").addEventListener("click", () => {
-  if (!app.urls.length) { alert("Sube imágenes primero"); return; }
+  <!-- JS libs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-gallery/2.29.0/js/blueimp-gallery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.7/howler.min.js"></script>
+</head>
 
-  app.bpm = parseInt(document.getElementById("beats-input").value) || 0;
-  app.next = parseInt(document.getElementById("next-input").value) || 0;
-  app.mantra = document.getElementById("mantra-input").value.trim();
+<body>
 
-  if (app.bpm <= 0) { alert("Introduce un BPM válido"); return; }
+<div class="container-fluid text-center">
 
-  showLoading(true);
+  <!-- BANNER -->
+  <div id="banner">
+    <div id="banner-left">
+      <img src="assets/logo.png" alt="Logo de Sissymax" id="banner-logo">
+      <h1 id="banner-title">Sissymax</h1>
+    </div>
+    <div id="banner-right">
+      <button class="btn btn-secondary" data-toggle="modal" data-target="#documentation-modal">
+        Documentación
+      </button>
+      <button class="btn btn-secondary" data-toggle="modal" data-target="#import-link-modal">
+        Importar configuración
+      </button>
+    </div>
+  </div>
 
-  if (app.mantra) {
-    const vol = parseFloat(document.getElementById("volume-mantra")?.value || 0.15);
-    app.mantraSound = new Howl({
-      src: ["assets/mantra/mantra1.mp3"],
-      volume: vol,
-      preload: true,
-      html5: true,
-      onload: () => {
-        showLoading(false);
-        iniciarSesion();
-      },
-      onloaderror: () => {
-        alert("Error al cargar el mantra");
-        showLoading(false);
-      }
-    });
-  } else {
-    showLoading(false);
-    iniciarSesion();
-  }
-});
+  <!-- INSTRUCCIONES -->
+  <div id="instructions">
+    <ol>
+      <li>Sube una carpeta con tus imágenes.</li>
+      <li>Configura BPM y golpes por imagen.</li>
+      <li>Escribe tu mantra.</li>
+      <li>Pulsa <strong>Iniciar</strong>.</li>
+    </ol>
+  </div>
 
-/****************************************************
- * EVENTOS
- ****************************************************/
-window.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("folder-input")?.addEventListener("change", handleFolderUpload);
-  document.addEventListener("visibilitychange", () => { if (document.hidden) stop(); });
-});
+  <!-- AJUSTES -->
+  <div id="settings">
+    <form class="form-horizontal" autocomplete="off">
+
+      <!-- Carpeta -->
+      <div class="form-group">
+        <label class="btn btn-primary" for="folder-input">Subir carpeta</label>
+        <input type="file" id="folder-input" webkitdirectory multiple style="display:none;">
+        <div>
+          <span id="file-count" style="color:#EDEDED;">0 archivos cargados</span>
+        </div>
+      </div>
+
+      <!-- BPM -->
+      <div class="form-group">
+        <label for="beats-input">BPM:</label>
+        <input class="form-control" id="beats-input" type="number">
+      </div>
+
+      <!-- NEXT -->
+      <div class="form-group">
+        <label for="next-input">Golpes por imagen:</label>
+        <input class="form-control" id="next-input" type="number">
+      </div>
+
+      <!-- MANTRA -->
+      <textarea class="form-control" id="mantra-input" rows="3" placeholder="Escribe tu mantra"></textarea>
+      <br>
+
+
+      <!-- START -->
+      <div class="form-group d-flex justify-content-center">
+        <button id="start-button" type="button" class="btn btn-primary btn-lg">
+          Iniciar
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<!-- MANTRA DISPLAY -->
+<div id="mantra-display" class="text-center"></div>
+
+<!-- GALERÍA -->
+<div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">
+  <div class="slides"></div>
+  <a class="prev">‹</a>
+  <a class="next">›</a>
+  <a class="close">×</a>
+  <ol class="indicator"></ol>
+</div>
+
+<!-- FOOTER -->
+<footer id="footer" class="text-center">
+  <h5>Enlaces</h5>
+  <ul>
+    <li><a href="https://www.reddit.com/r/SissificationAcademy/" target="_blank">Sissification Academy</a></li>
+    <li><a href="https://x.com/sissyloverhq" target="_blank">Sissy Lover HQ</a></li>
+    <li><a href="https://sissylover.com/" target="_blank">Sissy Lover</a></li>
+  </ul>
+</footer>
+
+<!-- JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
