@@ -96,6 +96,5 @@ document.getElementById("start-button").addEventListener("click",()=>{
 
 window.addEventListener("DOMContentLoaded",()=>{
   document.getElementById("folder-input")?.addEventListener("change",handleFolderUpload);
-  document.addEventListener("visibilitychange",()=>{ if(document.hidden) stop(); });
 });
 
