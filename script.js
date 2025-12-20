@@ -9,7 +9,8 @@ var app = {
   mantraSound: null,
   urls: [],
   metronome: null,
-  gallery: null
+  gallery: null,
+  stopping: false // FLAG para prevenir recursión
 };
 
 /****************************************************
@@ -153,6 +154,9 @@ function start() {
  * DETENER TODO
  ****************************************************/
 function stop() {
+  if (app.stopping) return; // previene recursión
+  app.stopping = true;
+
   clearInterval(app.metronome);
   app.metronome = null;
 
@@ -164,11 +168,14 @@ function stop() {
     el.textContent = "";
   }
 
-  // Cerrar galería si está abierta
+  // Cerrar galería si está abierta, sin recursión
   if (app.gallery && app.gallery.close) {
-    app.gallery.close();
-    app.gallery = null;
+    const g = app.gallery;
+    app.gallery = null; // rompe la recursión
+    g.close();
   }
+
+  app.stopping = false;
 }
 
 /****************************************************
