@@ -85,21 +85,30 @@ a, a:hover {
   font-size: 75%;
 }
 
+/* ===============================
+   MANTRA DISPLAY (CENTRADO REAL)
+================================ */
 #mantra-display {
   position: fixed;
-  top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 4em; /* Larger font size for better visibility */
-  color: rgba(255, 255, 255, 1); /* Fully opaque text */
-  background-color: rgba(0, 0, 0, 0.5); /* More transparent black background */
-  padding: 20px 40px; /* Add padding around the text */
-  border-radius: 15px; /* Rounded corners for the background */
+  bottom: 12%;              /* abajo y centrado */
+  transform: translateX(-50%);
+  max-width: 90vw;
+
+  font-size: 2.4em;
+  font-weight: bold;
   text-align: center;
-  pointer-events: none; /* Prevent interaction */
-  z-index: 1000000; /* Ensure it appears above the slideshow */
-  display: none; /* Initially hidden */
-  animation: fade-in-out 2s infinite ease-in-out; /* Apply the fade-in-out animation */
+
+  color: #ffffff;
+  background: rgba(0,0,0,0.55);
+  padding: 18px 32px;
+  border-radius: 16px;
+
+  pointer-events: none;
+  z-index: 1000000;
+  display: none;
+
+  animation: pulse 1.5s ease-in-out infinite;
 }
 
 @keyframes fade-in-out {
