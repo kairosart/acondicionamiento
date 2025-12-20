@@ -14,30 +14,6 @@ var app = {
 };
 
 /****************************************************
- * SPINNER
- ****************************************************/
-function showLoading(show) {
-  let el = document.getElementById("loading-screen");
-  if (!el) {
-    el = document.createElement("div");
-    el.id = "loading-screen";
-    el.style.cssText = `
-      position: fixed; top:0; left:0; right:0; bottom:0;
-      background: rgba(0,0,0,0.7);
-      display: flex; justify-content:center; align-items:center;
-      z-index:999999;
-    `;
-    el.innerHTML = `<div class="spinner"></div>`;
-    document.body.appendChild(el);
-
-    const style = document.createElement("style");
-    style.innerHTML = `@keyframes spin {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}`;
-    document.head.appendChild(style);
-  }
-  el.style.display = show ? "flex" : "none";
-}
-
-/****************************************************
  * SUBIDA DE IMÁGENES
  ****************************************************/
 function handleFolderUpload(event) {
@@ -48,17 +24,7 @@ function handleFolderUpload(event) {
 }
 
 /****************************************************
- * MEZCLAR ARRAY
- ****************************************************/
-function shuffleArray(array) {
-  for (let i=array.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [array[i],array[j]]=[array[j],array[i]];
-  }
-}
-
-/****************************************************
- * MANTRA VISUAL
+ * MOSTRAR MANTRA
  ****************************************************/
 function showMantra(text){
   const el=document.getElementById("mantra-display");
@@ -70,37 +36,48 @@ function showMantra(text){
 /****************************************************
  * DETENER TODO
  ****************************************************/
-function stop(){
-  clearInterval(app.metronome); app.metronome=null;
-  if(app.mantraSound) app.mantraSound.stop();
-  if(app.tickSound) app.tickSound.stop();
-  const el=document.getElementById("mantra-display");
-  if(el){ el.style.display="none"; el.textContent=""; }
-  if(app.gallery){ app.gallery.close(); app.gallery=null; }
+function stop() {
+  clearInterval(app.metronome);
+  app.metronome = null;
+
+  if (app.mantraSound) app.mantraSound.stop();
+  if (app.tickSound) app.tickSound.stop();
+
+  const el = document.getElementById("mantra-display");
+  if (el) { el.style.display="none"; el.textContent=""; }
+
+  if (app.gallery) {
+    app.gallery.close();
+    app.gallery = null;
+  }
 }
 
 /****************************************************
  * INICIAR SESIÓN
  ****************************************************/
-function iniciarSesion(){
+function iniciarSesion() {
   stop();
-  app.beatCount=0;
+  app.beatCount = 0;
 
-  app.gallery = blueimp.Gallery(app.urls,{ onclose: stop });
+  // Abrir galería
+  app.gallery = blueimp.Gallery(app.urls, {
+    onclose: stop
+  });
 
-  const intervalMs = (60/app.bpm)*1000;
+  const intervalMs = (60 / app.bpm) * 1000;
 
-  app.metronome = setInterval(()=>{
+  // Metrónomo
+  app.metronome = setInterval(() => {
     app.tickSound.play();
     app.beatCount++;
 
-    if(app.mantraSound){
+    if (app.mantraSound) {
       showMantra(app.mantra);
       app.mantraSound.play();
     }
 
-    if(app.next>0 && app.beatCount%app.next===0){
-      if(app.gallery && app.gallery.getIndex()<app.urls.length-1){
+    if (app.next > 0 && app.beatCount % app.next === 0) {
+      if (app.gallery && app.gallery.getIndex() < app.urls.length - 1) {
         app.gallery.next();
       }
     }
@@ -110,43 +87,35 @@ function iniciarSesion(){
 /****************************************************
  * BOTÓN INICIAR
  ****************************************************/
-document.getElementById("start-button").addEventListener("click",()=>{
-  if(!app.urls.length){ alert("Sube imágenes primero"); return; }
+document.getElementById("start-button").addEventListener("click", () => {
+  if (!app.urls.length) { alert("Sube imágenes primero"); return; }
 
-  app.bpm=parseInt(document.getElementById("beats-input").value)||0;
-  app.next=parseInt(document.getElementById("next-input").value)||0;
-  app.mantra=document.getElementById("mantra-input").value.trim();
+  app.bpm = parseInt(document.getElementById("beats-input").value) || 0;
+  app.next = parseInt(document.getElementById("next-input").value) || 0;
+  app.mantra = document.getElementById("mantra-input").value.trim();
 
-  if(app.bpm<=0){ alert("Introduce un BPM válido"); return; }
+  if (app.bpm <= 0) { alert("Introduce un BPM válido"); return; }
 
-  showLoading(true);
-
-  if(app.mantra){
-    const vol=parseFloat(document.getElementById("volume-mantra")?.value||0.15);
-    app.mantraSound=new Howl({
-      src:["assets/mantra/mantra1.mp3"],
-      volume:vol,
-      preload:true,
-      html5:true,
-      onload:()=>{
-        showLoading(false);
-        iniciarSesion();
-      },
-      onloaderror:()=>{
-        alert("Error al cargar el mantra");
-        showLoading(false);
-      }
+  // Preparar mantra
+  if (app.mantra) {
+    const vol = parseFloat(document.getElementById("volume-mantra")?.value || 0.15);
+    app.mantraSound = new Howl({
+      src: ["assets/mantra/mantra1.mp3"],
+      volume: vol,
+      html5: true,
+      preload: true
     });
   } else {
-    showLoading(false);
-    iniciarSesion();
+    app.mantraSound = null;
   }
+
+  iniciarSesion();
 });
 
 /****************************************************
  * EVENTOS
  ****************************************************/
-window.addEventListener("DOMContentLoaded",()=>{
-  document.getElementById("folder-input")?.addEventListener("change",handleFolderUpload);
-  document.addEventListener("visibilitychange",()=>{ if(document.hidden) stop(); });
+window.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("folder-input")?.addEventListener("change", handleFolderUpload);
+  document.addEventListener("visibilitychange", () => { if (document.hidden) stop(); });
 });
