@@ -102,6 +102,18 @@ a, a:hover {
   animation: fade-in-out 2s infinite ease-in-out; /* Apply the fade-in-out animation */
 }
 
+.mantra-textarea {
+  font-size: 1.2em;
+  text-align: center;
+  resize: none;
+  padding: 12px;
+}
+
+.mantra-textarea::placeholder {
+  text-align: center;
+  opacity: 0.7;
+}
+
 @keyframes fade-in-out {
   0%, 100% {
     opacity: 0; /* Fully transparent at the start and end */
