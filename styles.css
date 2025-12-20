@@ -116,7 +116,7 @@ ol, ul {
 }
 
 .mantra-textarea::placeholder {
-  text-align: center;
+  text-align: left;
   opacity: 0.7;
 }
 
