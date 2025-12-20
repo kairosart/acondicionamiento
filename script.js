@@ -65,13 +65,26 @@ function playMantraAudio() {
 function openGallery() {
   if (!app.urls.length) return;
 
-  // Nueva instancia de galería cada vez
   new blueimp.Gallery(app.urls, {
     carousel: false,
     closeOnEscape: true,
     closeOnSlideClick: true,
     onclose: () => {
-      stop(); // limpia ticks y mantra al cerrar
+      // Detener metronomo
+      if (app.metronome) {
+        clearInterval(app.metronome);
+        app.metronome = null;
+      }
+
+      // Detener audio mantra
+      if (app.mantraSound) app.mantraSound.stop();
+
+      // Ocultar mantra visual
+      const el = document.getElementById("mantra-display");
+      if (el) {
+        el.style.display = "none";
+        el.textContent = "";
+      }
     }
   });
 }
@@ -130,7 +143,6 @@ function start() {
     if (next > 0 && beatCount % next === 0) {
       const galleryEl = document.querySelector(".blueimp-gallery");
       if (galleryEl && galleryEl.classList.contains("blueimp-gallery")) {
-        // avanzar slide
         const event = new Event("next");
         galleryEl.dispatchEvent(event);
       }
