@@ -1,44 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sissymax</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sissymax</title>
 
-  <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/blueimp-gallery/2.29.0/css/blueimp-gallery.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="styles.css">
 
-  <!-- Blueimp Gallery -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/blueimp-gallery/2.29.0/css/blueimp-gallery.min.css">
-
-  <!-- Bootstrap -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-
-  <!-- Tus estilos -->
-  <link rel="stylesheet" href="styles.css">
-
-  <!-- Animación mantra (fallback universal) -->
-  <style>
-    #mantra-display {
-      display: none;
-      font-size: 2.2em;
-      font-weight: bold;
-      margin: 30px auto;
-      color: #ffffff;
-      animation: pulse 1.5s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0% { opacity: 0.3; transform: scale(0.98); }
-      50% { opacity: 1; transform: scale(1); }
-      100% { opacity: 0.3; transform: scale(0.98); }
-    }
-  </style>
-
-  <!-- JS libs -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-gallery/2.29.0/js/blueimp-gallery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.7/howler.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-gallery/2.29.0/js/blueimp-gallery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.7/howler.min.js"></script>
 </head>
-
 <body>
 
 <div class="container-fluid text-center">
@@ -50,12 +24,8 @@
       <h1 id="banner-title">Sissymax</h1>
     </div>
     <div id="banner-right">
-      <button class="btn btn-secondary" data-toggle="modal" data-target="#documentation-modal">
-        Documentación
-      </button>
-      <button class="btn btn-secondary" data-toggle="modal" data-target="#import-link-modal">
-        Importar configuración
-      </button>
+      <button class="btn btn-secondary" data-toggle="modal" data-target="#documentation-modal">Documentación</button>
+      <button class="btn btn-secondary" data-toggle="modal" data-target="#import-link-modal">Importar configuración</button>
     </div>
   </div>
 
@@ -72,15 +42,11 @@
   <!-- AJUSTES -->
   <div id="settings">
     <form class="form-horizontal" autocomplete="off" onsubmit="return false;">
-
-
       <!-- Carpeta -->
       <div class="form-group">
         <label class="btn btn-primary" for="folder-input">Subir carpeta</label>
         <input type="file" id="folder-input" webkitdirectory multiple style="display:none;">
-        <div>
-          <span id="file-count" style="color:#EDEDED;">0 archivos cargados</span>
-        </div>
+        <div><span id="file-count" style="color:#EDEDED;">0 archivos cargados</span></div>
       </div>
 
       <!-- BPM -->
@@ -96,28 +62,30 @@
       </div>
 
       <!-- MANTRA -->
-      <textarea class="form-control" id="mantra-input" rows="3" placeholder="Escribe tu mantra"></textarea>
+      <textarea class="form-control" id="mantra-input" rows="2" placeholder="Escribe tu mantra"></textarea>
       <br>
 
-
-      <!-- START -->
-      <div class="form-group d-flex justify-content-center">
-        <button
-        id="start-button"
-        type="button"
-        class="btn btn-primary btn-lg"
-        onclick="start()">
-        Iniciar
-      </button>
-
+      <!-- VOLUMEN -->
+      <div class="form-group">
+        <label for="volume-tick">Volumen tick:</label>
+        <input type="range" id="volume-tick" min="0" max="1" step="0.01" value="1">
+        <label for="volume-mantra">Volumen mantra:</label>
+        <input type="range" id="volume-mantra" min="0" max="1" step="0.01" value="0.15">
       </div>
 
+      <!-- START -->
+      <div class="form-group" style="text-align:center;">
+        <button id="start-button" type="button" class="btn btn-primary btn-lg">Iniciar</button>
+      </div>
     </form>
   </div>
 </div>
 
 <!-- MANTRA DISPLAY -->
 <div id="mantra-display" class="text-center"></div>
+
+<!-- LOADING SPINNER -->
+<div id="loading-screen"><div class="spinner"></div></div>
 
 <!-- GALERÍA -->
 <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">
@@ -138,10 +106,8 @@
   </ul>
 </footer>
 
-<!-- JS -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="script.js"></script>
-
 </body>
 </html>
