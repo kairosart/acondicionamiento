@@ -2,25 +2,12 @@
  * ESTADO GLOBAL
  ****************************************************/
 var app = {
-  tickSound: new Howl({
-    src: ["assets/tick.mp3"],
-    volume: 1.0
-  }),
+  tickSound: new Howl({ src: ["assets/tick.mp3"], volume: 1.0 }),
   mantraSound: null,
   urls: [],
   metronome: null,
-  gallery: null,
-  stopping: false // FLAG para prevenir recursión
+  gallery: null
 };
-
-/****************************************************
- * DESBLOQUEO AUDIO (GESTO DE USUARIO)
- ****************************************************/
-function unlockAudio() {
-  if (Howler.ctx && Howler.ctx.state === 'suspended') {
-    Howler.ctx.resume();
-  }
-}
 
 /****************************************************
  * SUBIDA DE IMÁGENES
@@ -65,12 +52,11 @@ function showMantra(text) {
 }
 
 /****************************************************
- * AUDIO MANTRA (HOWLER)
+ * AUDIO MANTRA
  ****************************************************/
 function playMantraAudio() {
   if (!app.mantraSound) return;
-
-  app.mantraSound.stop(); // reiniciar siempre
+  app.mantraSound.stop();
   app.mantraSound.play();
 }
 
@@ -80,10 +66,9 @@ function playMantraAudio() {
 function openGallery() {
   if (!app.urls.length) return;
 
-  // Modal completo de Blueimp (la X funciona)
   app.gallery = new blueimp.Gallery(app.urls, {
     carousel: false,
-    onclose: stop
+    onclose: stop // stop se llama cuando el usuario cierra con X
   });
 }
 
@@ -91,9 +76,8 @@ function openGallery() {
  * INICIAR SESIÓN
  ****************************************************/
 function start() {
-  unlockAudio();
-  Howler.mute(false);
-  Howler.volume(1.0);
+  // desbloqueo de audio
+  if (Howler.ctx && Howler.ctx.state === 'suspended') Howler.ctx.resume();
 
   if (!app.urls.length) {
     alert("Sube una carpeta con imágenes primero.");
@@ -114,13 +98,10 @@ function start() {
   // Preparar audio del mantra
   if (mantra) {
     app.mantraSound = new Howl({
-      src: ["assets/mantra/mantra1.mp3"], // Reemplaza con tu mantra
-      volume: 0.15, // más suave que el tick
+      src: ["assets/mantra/mantra1.mp3"], // tu archivo mp3
+      volume: 0.15,
       preload: true,
-      html5: true,
-      onplayerror: function() {
-        this.once('unlock', function() { this.play(); });
-      }
+      html5: true
     });
   } else {
     app.mantraSound = null;
@@ -129,10 +110,9 @@ function start() {
   let beatCount = 0;
   const intervalMs = (60 / bpm) * 1000;
 
-  // Iniciar galería
   openGallery();
 
-  // Metrónomo principal
+  // Metrónomo
   app.metronome = setInterval(() => {
     app.tickSound.play();
     beatCount++;
@@ -154,9 +134,6 @@ function start() {
  * DETENER TODO
  ****************************************************/
 function stop() {
-  if (app.stopping) return; // previene recursión
-  app.stopping = true;
-
   clearInterval(app.metronome);
   app.metronome = null;
 
@@ -168,14 +145,8 @@ function stop() {
     el.textContent = "";
   }
 
-  // Cerrar galería si está abierta, sin recursión
-  if (app.gallery && app.gallery.close) {
-    const g = app.gallery;
-    app.gallery = null; // rompe la recursión
-    g.close();
-  }
-
-  app.stopping = false;
+  // No llamar a app.gallery.close() aquí
+  app.gallery = null;
 }
 
 /****************************************************
@@ -183,7 +154,6 @@ function stop() {
  ****************************************************/
 function applySettingsFromURL() {
   const params = new URLSearchParams(window.location.search);
-
   if (params.get("bpm")) document.getElementById("beats-input").value = params.get("bpm");
   if (params.get("next")) document.getElementById("next-input").value = params.get("next");
 }
@@ -195,8 +165,6 @@ window.addEventListener("DOMContentLoaded", () => {
   applySettingsFromURL();
 
   document.getElementById("folder-input")?.addEventListener("change", handleFolderUpload);
-
-  // Botón iniciar
   document.getElementById("start-button")?.addEventListener("click", start);
 });
 
