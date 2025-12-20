@@ -1,21 +1,70 @@
+/****************************************************
+ * ESTADO GLOBAL
+ ****************************************************/
 var app = {
-  tickSound: new Howl({ src: ["assets/tick.mp3"], volume: 1.0 }),
+  tickSound: new Howl({ src: ["assets/tick.mp3"], volume: 1.0, html5: true }),
   mantraSound: null,
   urls: [],
   metronome: null,
-  isRunning: false  // NUEVO FLAG
+  gallery: null,
+  bpm: 0,
+  next: 0,
+  beatCount: 0,
+  mantra: "",
 };
 
-function handleFolderUpload(event) {
-  const files = Array.from(event.target.files || []);
-  const MAX_IMAGES = 100;
-  app.urls = files.filter(f => f.type.startsWith("image/"))
-                  .slice(0, MAX_IMAGES)
-                  .map(f => URL.createObjectURL(f));
-  const count = document.getElementById("file-count");
-  if (count) count.textContent = `${app.urls.length} archivo(s) cargados`;
+/****************************************************
+ * SPINNER DE CARGA
+ ****************************************************/
+function showLoading(show) {
+  let el = document.getElementById("loading-screen");
+  if (!el) {
+    el = document.createElement("div");
+    el.id = "loading-screen";
+    el.style.cssText = `
+      position: fixed;
+      top:0; left:0; right:0; bottom:0;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999999;
+    `;
+    el.innerHTML = `<div class="spinner" style="
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #D48ACB;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      animation: spin 1s linear infinite;
+    "></div>`;
+    document.body.appendChild(el);
+
+    const style = document.createElement("style");
+    style.innerHTML = `
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  el.style.display = show ? "flex" : "none";
 }
 
+/****************************************************
+ * SUBIDA DE IMÁGENES
+ ****************************************************/
+function handleFolderUpload(event) {
+  const files = Array.from(event.target.files || []);
+  app.urls = files.filter(f => f.type.startsWith("image/"))
+                  .map(f => URL.createObjectURL(f));
+  document.getElementById("file-count").textContent = `${app.urls.length} archivo(s) cargados`;
+}
+
+/****************************************************
+ * MEZCLAR ARRAY
+ ****************************************************/
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -23,122 +72,106 @@ function shuffleArray(array) {
   }
 }
 
+/****************************************************
+ * MANTRA VISUAL
+ ****************************************************/
 function showMantra(text) {
   const el = document.getElementById("mantra-display");
   if (!el) return;
   el.style.display = "block";
   el.textContent = text;
-  el.style.animation = "none";
-  void el.offsetHeight;
-  el.style.animation = "";
 }
 
-function playMantraAudio() {
-  if (!app.mantraSound) return;
-  app.mantraSound.stop();
-  app.mantraSound.play();
+/****************************************************
+ * DETENER TODO
+ ****************************************************/
+function stop() {
+  clearInterval(app.metronome);
+  app.metronome = null;
+
+  if (app.mantraSound) app.mantraSound.stop();
+  if (app.tickSound) app.tickSound.stop();
+
+  const el = document.getElementById("mantra-display");
+  if (el) el.style.display = "none";
+
+  if (app.gallery) {
+    app.gallery.close();
+    app.gallery = null;
+  }
 }
 
-function openGallery() {
-  if (!app.urls.length) return;
+/****************************************************
+ * INICIAR SESIÓN
+ ****************************************************/
+function iniciarSesion() {
+  stop(); // parar cualquier sesión previa
 
-  new blueimp.Gallery(app.urls, {
-    carousel: false,
-    closeOnEscape: true,
-    closeOnSlideClick: true,
-    onclose: () => {
-      stopSession();
-    }
+  app.beatCount = 0;
+
+  app.gallery = blueimp.Gallery(app.urls, {
+    onclose: stop
   });
-}
 
-function start() {
-  if (app.isRunning) return; // No iniciar varias veces
-  app.isRunning = true;
-
-  if (!app.urls.length) {
-    alert("Sube una carpeta con imágenes primero.");
-    app.isRunning = false;
-    return;
-  }
-
-  const bpm = parseInt(document.getElementById("beats-input")?.value, 10) || 0;
-  const next = parseInt(document.getElementById("next-input")?.value, 10) || 0;
-  const mantra = document.getElementById("mantra-input")?.value.trim();
-
-  if (bpm <= 0) {
-    alert("Introduce un BPM válido.");
-    app.isRunning = false;
-    return;
-  }
-
-  shuffleArray(app.urls);
-
-  if (mantra) {
-    app.mantraSound = new Howl({
-      src: ["assets/mantra/mantra1.mp3"],
-      volume: 0.15,
-      preload: true,
-      html5: true
-    });
-  } else {
-    app.mantraSound = null;
-  }
-
-  let beatCount = 0;
-  const intervalMs = (60 / bpm) * 1000;
-
-  openGallery();
+  const intervalMs = (60 / app.bpm) * 1000;
 
   app.metronome = setInterval(() => {
-    if (!app.isRunning) return; // ⚠️ Check flag
     app.tickSound.play();
-    beatCount++;
+    app.beatCount++;
 
-    if (mantra) {
-      showMantra(mantra);
-      playMantraAudio();
+    if (app.mantraSound) {
+      showMantra(app.mantra);
+      app.mantraSound.play();
     }
 
-    if (next > 0 && beatCount % next === 0) {
-      const galleryEl = document.querySelector(".blueimp-gallery");
-      if (galleryEl && galleryEl.classList.contains("blueimp-gallery")) {
-        const event = new Event("next");
-        galleryEl.dispatchEvent(event);
+    if (app.next > 0 && app.beatCount % app.next === 0) {
+      if (app.gallery && app.gallery.getIndex() < app.urls.length - 1) {
+        app.gallery.next();
       }
     }
   }, intervalMs);
 }
 
-function stopSession() {
-  app.isRunning = false; // Desactivar flag
+/****************************************************
+ * BOTÓN INICIAR
+ ****************************************************/
+document.getElementById("start-button").addEventListener("click", () => {
+  if (!app.urls.length) { alert("Sube imágenes primero"); return; }
 
-  if (app.metronome) {
-    clearInterval(app.metronome);
-    app.metronome = null;
+  app.bpm = parseInt(document.getElementById("beats-input").value) || 0;
+  app.next = parseInt(document.getElementById("next-input").value) || 0;
+  app.mantra = document.getElementById("mantra-input").value.trim();
+
+  if (app.bpm <= 0) { alert("Introduce un BPM válido"); return; }
+
+  showLoading(true);
+
+  if (app.mantra) {
+    const vol = parseFloat(document.getElementById("volume-mantra")?.value || 0.15);
+    app.mantraSound = new Howl({
+      src: ["assets/mantra/mantra1.mp3"],
+      volume: vol,
+      preload: true,
+      html5: true,
+      onload: () => {
+        showLoading(false);
+        iniciarSesion();
+      },
+      onloaderror: () => {
+        alert("Error al cargar el mantra");
+        showLoading(false);
+      }
+    });
+  } else {
+    showLoading(false);
+    iniciarSesion();
   }
-
-  if (app.mantraSound) app.mantraSound.stop();
-
-  const el = document.getElementById("mantra-display");
-  if (el) {
-    el.style.display = "none";
-    el.textContent = "";
-  }
-}
-
-function applySettingsFromURL() {
-  const params = new URLSearchParams(window.location.search);
-  if (params.get("bpm")) document.getElementById("beats-input").value = params.get("bpm");
-  if (params.get("next")) document.getElementById("next-input").value = params.get("next");
-}
-
-window.addEventListener("DOMContentLoaded", () => {
-  applySettingsFromURL();
-  document.getElementById("folder-input")?.addEventListener("change", handleFolderUpload);
-  document.getElementById("start-button")?.addEventListener("click", start);
 });
 
-// Seguridad: parar al ocultar pestaña o cerrar ventana
-document.addEventListener("visibilitychange", () => { if (document.hidden) stopSession(); });
-window.addEventListener("beforeunload", stopSession);
+/****************************************************
+ * EVENTOS
+ ****************************************************/
+window.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("folder-input")?.addEventListener("change", handleFolderUpload);
+  document.addEventListener("visibilitychange", () => { if (document.hidden) stop(); });
+});
