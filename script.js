@@ -1,182 +1,455 @@
-/****************************************************
- * ESTADO GLOBAL
- ****************************************************/
-var app = {
-  tickSound: new Howl({
-    src: ["assets/tick.mp3"],
-    volume: 2.0
-  }),
+/* General Body Styling */
+body {
+  color: #EDEDED; /* Light Gray for text */
+  background-color: #2E2A3B; /* Dark Lavender Gray for the main background */
+  font-size: 16px;
+  margin: 0; /* Remove default margin from the body */
+  padding: 0; /* Remove default padding from the body */
+  padding-top: 25px; /* Adjust this value to reduce the spacing */
+  box-sizing: border-box; /* Include padding in the total height */
+}
+h1 {
+  font-weight: bold;
+}
+ol, ul {
+  display: inline-block;
+}
+#metronome-tick {
+  display: none;
+}
+#settings {
+  display: flex; /* Use Flexbox for centering */
+  flex-direction: column; /* Stack form elements vertically */
+  align-items: center; /* Center-align the form elements */
+  justify-content: center; /* Center the form vertically */
+  max-width: 600px; /* Limit the width of the form */
+  width: 100%; /* Ensure the form takes up the full width of its container */
+  margin: 0 auto; /* Center the form horizontally */
+  padding: 30px; /* Add more padding around the form */
+  background-color: #3C374A; /* Soft Gray Lavender for the form background */
+  border: 1px solid #D48ACB; /* Muted Pink for the border */
+  border-radius: 10px; /* Add rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+  box-sizing: border-box; /* Ensure padding is included in the width */
+}
 
-  mantraSound: null,   // Howler para mantra
-  urls: [],
-  metronome: null,
-  gallery: null
-};
+/* Ensure the body and html take up the full height of the viewport */
+html, body {
+  height: 100%; /* Make the body and html fill the entire viewport */
+  margin: 0; /* Remove default margin */
+  display: flex;
+  flex-direction: column; /* Stack elements vertically */
+}
 
-/****************************************************
- * SUBIDA DE IMÁGENES
- ****************************************************/
-function handleFolderUpload(event) {
-  const files = Array.from(event.target.files || []);
-  const MAX_IMAGES = 100;
+/* Buttons */
+.btn-primary,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: #D48ACB !important; /* Muted Pink for buttons */
+  border-color: #D48ACB !important;
+  color: #2E2A3B !important; /* Dark Lavender Gray for text on buttons */
+}
 
-  app.urls = files
-    .filter(f => f.type.startsWith("image/"))
-    .slice(0, MAX_IMAGES)
-    .map(file => URL.createObjectURL(file));
+.btn-primary:hover {
+  background-color: #B97AB0 !important; /* Slightly darker shade of muted pink for hover */
+  border-color: #B97AB0 !important;
+}
 
-  const count = document.getElementById("file-count");
-  if (count) {
-    count.textContent = `${app.urls.length} archivo(s) cargados`;
+.btn-secondary {
+  background-color: #3C374A; /* Soft Gray Lavender for secondary buttons */
+  border-color: #3C374A;
+  color: #EDEDED; /* Light Gray for text */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add a shadow for better visibility */
+}
+
+.btn-secondary:hover {
+  background-color: #D48ACB; /* Muted Pink for hover */
+  border-color: #D48ACB;
+}
+
+a, a:hover {
+  color: #d200e6 !important;
+}
+#blueimp-gallery.blueimp-gallery > .play-pause {
+  width: 40px;
+  height: 40px;
+  background-size: 80px 40px;
+}
+#blueimp-gallery.blueimp-gallery-playing > .play-pause {
+  background-position: -40px 0;
+}
+#blueimp-gallery .play-pause {
+  display: none !important;
+}
+.policy {
+  font-size: 75%;
+}
+
+#mantra-display {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 4em; /* Larger font size for better visibility */
+  color: rgba(255, 255, 255, 1); /* Fully opaque text */
+  background-color: rgba(0, 0, 0, 0.5); /* More transparent black background */
+  padding: 20px 40px; /* Add padding around the text */
+  border-radius: 15px; /* Rounded corners for the background */
+  text-align: center;
+  pointer-events: none; /* Prevent interaction */
+  z-index: 1000000; /* Ensure it appears above the slideshow */
+  display: none; /* Initially hidden */
+  animation: fade-in-out 2s infinite ease-in-out; /* Apply the fade-in-out animation */
+}
+
+.mantra-textarea {
+  font-size: 1.2em;
+  text-align: center;
+  resize: none;
+  padding: 12px;
+}
+
+.mantra-textarea::placeholder {
+  text-align: center;
+  opacity: 0.7;
+}
+
+@keyframes fade-in-out {
+  0%, 100% {
+    opacity: 0; /* Fully transparent at the start and end */
+  }
+  50% {
+    opacity: 1; /* Fully visible at the midpoint */
   }
 }
 
-/****************************************************
- * UTILIDAD: MEZCLAR ARRAY
- ****************************************************/
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
+/* Banner Styling */
+#banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: #3C374A; /* Soft Gray Lavender for the banner background */
+  color: #EDEDED; /* Light Gray for text */
+  border-bottom: 2px solid #D48ACB; /* Muted Pink for the border */
+  width: 100%; /* Ensure the banner spans the full width */
+  position: fixed; /* Keep the banner fixed at the top */
+  top: 0; /* Align the banner to the top of the viewport */
+  left: 0; /* Align the banner to the left edge */
+  right: 0; /* Align the banner to the right edge */
+  z-index: 1000; /* Ensure the banner stays above other elements */
+  box-sizing: border-box; /* Include padding and border in the width */
 }
 
-/****************************************************
- * MANTRA VISUAL (ANIMADO)
- ****************************************************/
-function showMantra(text) {
-  const el = document.getElementById("mantra-display");
-  if (!el) return;
-
-  el.style.display = "block";
-  el.textContent = text;
-
-  // Reinicia animación CSS
-  el.style.animation = "none";
-  void el.offsetHeight;
-  el.style.animation = "";
+#banner-left {
+  display: flex;
+  align-items: center; /* Align logo and title vertically */
+  gap: 10px; /* Add spacing between the logo and title */
+  flex-shrink: 0; /* Prevent the logo and title from shrinking */
 }
 
-/****************************************************
- * AUDIO MANTRA (HOWLER)
- ****************************************************/
-function playMantraAudio() {
-  if (!app.mantraSound) return;
-
-  app.mantraSound.stop(); // reiniciar siempre
-  app.mantraSound.play();
+#banner-right {
+  display: flex;
+  gap: 10px; /* Add spacing between buttons */
 }
 
-/****************************************************
- * INICIAR EXPERIENCIA
- ****************************************************/
-function start() {
-  // desbloqueo global de audio
-  Howler.volume(1.0);
-  Howler.mute(false);
-
-  if (!app.urls.length) {
-    alert("Sube una carpeta con imágenes primero.");
-    return;
-  }
-
-  const bpm = parseInt(document.getElementById("beats-input")?.value, 10) || 0;
-  const next = parseInt(document.getElementById("next-input")?.value, 10) || 0;
-  const mantra = document.getElementById("mantra-input")?.value.trim();
-
-  if (bpm <= 0) {
-    alert("Introduce un BPM válido.");
-    return;
-  }
-
-  shuffleArray(app.urls);
-
-  // Preparar audio del mantra (MP3)
-  if (mantra) {
-    app.mantraSound = new Howl({
-      src: ["assets/mantra/mantra1.mp3"],
-      volume: 0.15,
-      preload: true,
-      html5: true   // 🔑 🔑 🔑 CLAVE ABSOLUTA
-    });
-
-  } else {
-    app.mantraSound = null;
-  }
-
-  let beatCount = 0;
-  const intervalMs = (60 / bpm) * 1000;
-
-  // Iniciar galería
-  app.gallery = blueimp.Gallery(app.urls, {
-    onclose: stop
-  });
-
-  // Metrónomo principal
-  app.metronome = setInterval(() => {
-    app.tickSound.play();
-    beatCount++;
-
-    if (mantra) {
-      showMantra(mantra);
-      playMantraAudio();
-    }
-
-    if (next > 0 && beatCount % next === 0) {
-      if (app.gallery && app.gallery.getIndex() < app.urls.length - 1) {
-        app.gallery.next();
-      }
-    }
-  }, intervalMs);
+#banner-logo {
+  height: 80px; /* Adjust the logo size */
 }
 
-/****************************************************
- * DETENER TODO
- ****************************************************/
-function stop() {
-  clearInterval(app.metronome);
-  app.metronome = null;
-
-  if (app.mantraSound) {
-    app.mantraSound.stop();
-  }
-
-  const el = document.getElementById("mantra-display");
-  if (el) {
-    el.style.display = "none";
-    el.textContent = "";
-  }
+#banner-title {
+  font-size: 2.5em; /* Adjust the title size */
+  font-weight: bold;
+  margin: 0; /* Remove default margin */
+  white-space: nowrap; /* Prevent the title from wrapping to the next line */
 }
 
-/****************************************************
- * AJUSTES DESDE URL (?bpm=60&next=4)
- ****************************************************/
-function applySettingsFromURL() {
-  const params = new URLSearchParams(window.location.search);
-
-  if (params.get("bpm")) {
-    document.getElementById("beats-input").value = params.get("bpm");
-  }
-
-  if (params.get("next")) {
-    document.getElementById("next-input").value = params.get("next");
-  }
+#banner button {
+  margin-left: 10px; /* Add spacing between buttons */
+  padding: 10px 15px; /* Add padding inside the buttons */
+  background-color: #EBA1F2; /* Logo color for buttons */
+  border: none; /* Remove borders */
+  border-radius: 5px; /* Add rounded corners */
+  color: #333333; /* Dark Gray for text */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+  cursor: pointer; /* Change cursor to pointer */
 }
 
-/****************************************************
- * EVENTOS
- ****************************************************/
-window.addEventListener("DOMContentLoaded", () => {
-  applySettingsFromURL();
+#banner button:hover {
+  background-color: #D48ACB; /* Slightly darker shade for hover */
+}
 
-  document.getElementById("folder-input")
-    ?.addEventListener("change", handleFolderUpload);
+/* Main content container */
+.container-fluid {
+  flex: 1; /* Allow the container to grow and fill available space */
+  display: flex; /* Use Flexbox for centering */
+  flex-direction: column; /* Stack content vertically */
+  justify-content: center; /* Center content vertically */
+  align-items: center; /* Center content horizontally */
+  margin-top: 0; /* Remove any additional margin */
+  padding-top: 20px; /* Optional: Add some padding for spacing */
+  padding-bottom: 20px; /* Add space above the footer */
+}
 
-  document.getElementById("start-button")
-    ?.addEventListener("click", start);
-});
+/* Instructions Styling */
+#instructions {
+  margin-top: 40px; /* Increase spacing between the instructions and the banner */
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+  max-width: 600px;
+  line-height: 1.8;
+  color: #EDEDED; /* Light Gray for text */
+  font-size: 1.1em;
+}
 
-// Seguridad móvil: parar al ocultar pestaña
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) stop();
-});
+/* Folder Group Styling */
+#folder-group {
+  display: flex;
+  align-items: center; /* Align items vertically */
+  gap: 20px; /* Add spacing between the Upload Folder */
+}
+
+/* Ensure the Upload Folder button and file count stack vertically */
+.folder-input-container {
+  display: flex;
+  flex-direction: column; /* Stack the button and file count vertically */
+  gap: 5px; /* Add spacing between the button and file count */
+}
+
+/* Style for the Upload Folder button */
+.folder-input-container .btn-primary {
+  width: 300px; /* Set the desired width for the button */
+  text-align: center; /* Ensure the text is centered */
+}
+
+.file-count-container {
+  margin-top: 5px; /* Add slight spacing above the file count */
+  text-align: left; /* Align the text to the left */
+}
+
+/* Ensure the file count is displayed below the Upload Folder button */
+.file-count-container {
+  margin-top: 10px; /* Add spacing above the file count */
+  text-align: left; /* Align the text to the left */
+  width: 100%; /* Ensure it spans the full width of the container */
+}
+
+#file-count {
+  color: #EDEDED; /* Match the theme color */
+  font-size: 0.9em; /* Slightly smaller font size */
+}
+
+/* Mantra Group Styling */
+#mantra-group {
+  display: flex;
+  align-items: center; /* Align items in the same row */
+  gap: 20px;
+  width: 100%;
+}
+
+.mantra-input-container,
+.voice-select-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+#mantra-group > div {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+}
+
+#mantra-input {
+  flex: 2; /* Allow the mantra input to take more space */
+}
+
+#voice-select {
+  flex: 1; /* Allow the dropdown to take less space */
+}
+
+#start-button-group {
+  text-align: center;
+}
+
+#banner-logo {
+  height: 80px; /* Adjust the logo size */
+  margin-right: 20px; /* Add spacing between the logo and the title */
+}
+
+#banner-title {
+  font-size: 2.5em; /* Adjust the title size */
+  font-weight: bold;
+  margin: 0; /* Remove default margin */
+}
+
+#banner button {
+  margin-left: 10px; /* Add spacing between buttons */
+  padding: 10px 15px; /* Add padding inside the buttons */
+  background-color: #EBA1F2; /* Logo color for buttons */
+  border: none; /* Remove borders */
+  border-radius: 5px; /* Add rounded corners */
+  color: #333333; /* Dark Gray for text */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+  cursor: pointer; /* Change cursor to pointer */
+}
+
+#banner button:hover {
+  background-color: #D48ACB; /* Slightly darker shade for hover */
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+  background-color: #3C374A; /* Soft Gray Lavender for dropdown background */
+  color: #EDEDED; /* Light Gray for text */
+  border: 1px solid #D48ACB; /* Muted Pink for border */
+}
+
+.dropdown-item {
+  color: #D48ACB; /* Match the banner text color */
+}
+
+.dropdown-item:hover {
+  background-color: #D48ACB; /* Muted Pink for hover */
+  color: #2E2A3B; /* Dark Lavender Gray for text */
+}
+
+.modal-dialog {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh; /* Ensure it takes the full height of the viewport */
+  margin: auto; /* Center the modal horizontally */
+  max-width: 500px; /* Optional: Limit the modal width */
+}
+
+.modal-content {
+  background-color: #3C374A; /* Soft Gray Lavender for modal background */
+  color: #EDEDED; /* Light Gray for text */
+  border: 2px solid #D48ACB; /* Muted Pink for border */
+  margin: auto; /* Center the modal content */
+}
+
+.modal-header {
+  border-bottom: 1px solid #D48ACB; /* Muted Pink for header border */
+}
+
+.modal-title {
+  font-weight: bold;
+}
+
+.modal-body ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.modal-body ul li {
+  margin-bottom: 10px;
+}
+
+.modal-body ul li a {
+  color: #D48ACB; /* Muted Pink for links */
+  text-decoration: none;
+}
+
+.modal-body ul li a:hover {
+  color: #B97AB0; /* Slightly darker shade for hover */
+}
+
+/* Footer */
+#footer {
+  background-color: #3C374A; /* Soft Gray Lavender for footer background */
+  color: #EDEDED; /* Light Gray for text */
+  padding: 20px 0;
+  border-top: 2px solid #D48ACB; /* Muted Pink for the border */
+  margin-top: auto; /* Push the footer to the bottom of the page */
+  text-align: center; /* Center-align the footer content */
+}
+
+#footer h5 {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+#footer ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex; /* Use flexbox to align items in a row */
+  justify-content: center; /* Center the links horizontally */
+  gap: 20px; /* Add spacing between the links */
+}
+
+#footer ul li {
+  margin: 0; /* Remove vertical margin */
+  display: inline; /* Ensure list items are inline */
+}
+
+#footer a {
+  color: #EBA1F2; /* Logo color for footer links */
+  text-decoration: none;
+}
+
+#footer a:hover {
+  color: #D48ACB; /* Slightly darker shade of the logo color for hover */
+}
+
+/* Center the instructions block horizontally while keeping the text left-aligned */
+#instructions {
+  margin-top: 40px; /* Increase spacing between the instructions and the banner */
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+  max-width: 600px;
+  line-height: 1.8;
+  color: #EDEDED; /* Light Gray for text */
+  font-size: 1.1em;
+}
+
+/* Form Inputs */
+.form-control {
+  background-color: #3C374A; /* Soft Gray Lavender for input backgrounds */
+  color: #EDEDED; /* Light Gray for text */
+  border: 1px solid #D48ACB; /* Muted Pink for input borders */
+  padding: 10px 15px; /* Add padding inside the input fields */
+  border-radius: 5px; /* Add rounded corners */
+  width: calc(100% - 10px); /* Ensure inputs take up the full width minus padding */
+  box-sizing: border-box; /* Ensure padding doesn't affect width */
+}
+
+/* Fix alignment for file input and dropdown */
+#folder-input,
+#voice-select {
+  height: auto; /* Ensure proper height for these elements */
+  padding: 10px; /* Add padding for consistency */
+  vertical-align: middle; /* Align them properly within their containers */
+}
+
+/* Focus state for input fields */
+.form-control:focus {
+  background-color: #2E2A3B; /* Dark Lavender Gray for focus state */
+  border-color: #D48ACB; /* Muted Pink for focus border */
+  color: #EDEDED;
+}
+
+/* Left-align labels */
+.form-group label {
+  text-align: left !important; /* Force labels to align to the left */
+  display: block; /* Ensure labels are on their own line */
+  margin-bottom: 5px; /* Add spacing below the label */
+  color: #EDEDED; /* Light Gray for text */
+  font-weight: bold; /* Make labels bold for better readability */
+  width: 100%; /* Ensure labels take up the full width of the form group */
+}
+
+/* Adjust form group spacing */
+.form-group {
+  width: 100%; /* Make form groups take up the full width */
+  margin-bottom: 20px; /* Add spacing between form groups */
+  display: flex; /* Use Flexbox for alignment */
+  align-items: center; /* Align items vertically */
+  gap: 20px; /* Add spacing between elements */
+  padding-left: 10px; /* Add padding to the left for spacing */
+  box-sizing: border-box; /* Ensure padding doesn't affect width */
+}
