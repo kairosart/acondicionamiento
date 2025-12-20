@@ -5,8 +5,7 @@ var app = {
   tickSound: new Howl({ src: ["assets/tick.mp3"], volume: 1.0 }),
   mantraSound: null,
   urls: [],
-  metronome: null,
-  gallery: null
+  metronome: null
 };
 
 /****************************************************
@@ -66,9 +65,14 @@ function playMantraAudio() {
 function openGallery() {
   if (!app.urls.length) return;
 
-  app.gallery = new blueimp.Gallery(app.urls, {
+  // Nueva instancia de galería cada vez
+  new blueimp.Gallery(app.urls, {
     carousel: false,
-    onclose: stop // stop se llama cuando el usuario cierra con X
+    closeOnEscape: true,
+    closeOnSlideClick: true,
+    onclose: () => {
+      stop(); // limpia ticks y mantra al cerrar
+    }
   });
 }
 
@@ -76,7 +80,7 @@ function openGallery() {
  * INICIAR SESIÓN
  ****************************************************/
 function start() {
-  // desbloqueo de audio
+  // desbloqueo de audio en móviles
   if (Howler.ctx && Howler.ctx.state === 'suspended') Howler.ctx.resume();
 
   if (!app.urls.length) {
@@ -98,7 +102,7 @@ function start() {
   // Preparar audio del mantra
   if (mantra) {
     app.mantraSound = new Howl({
-      src: ["assets/mantra/mantra1.mp3"], // tu archivo mp3
+      src: ["assets/mantra/mantra1.mp3"], // ruta de tu mantra
       volume: 0.15,
       preload: true,
       html5: true
@@ -110,6 +114,7 @@ function start() {
   let beatCount = 0;
   const intervalMs = (60 / bpm) * 1000;
 
+  // Abrir galería
   openGallery();
 
   // Metrónomo
@@ -123,8 +128,11 @@ function start() {
     }
 
     if (next > 0 && beatCount % next === 0) {
-      if (app.gallery && app.gallery.getIndex() < app.urls.length - 1) {
-        app.gallery.next();
+      const galleryEl = document.querySelector(".blueimp-gallery");
+      if (galleryEl && galleryEl.classList.contains("blueimp-gallery")) {
+        // avanzar slide
+        const event = new Event("next");
+        galleryEl.dispatchEvent(event);
       }
     }
   }, intervalMs);
@@ -134,8 +142,10 @@ function start() {
  * DETENER TODO
  ****************************************************/
 function stop() {
-  clearInterval(app.metronome);
-  app.metronome = null;
+  if (app.metronome) {
+    clearInterval(app.metronome);
+    app.metronome = null;
+  }
 
   if (app.mantraSound) app.mantraSound.stop();
 
@@ -144,9 +154,6 @@ function stop() {
     el.style.display = "none";
     el.textContent = "";
   }
-
-  // No llamar a app.gallery.close() aquí
-  app.gallery = null;
 }
 
 /****************************************************
@@ -163,7 +170,6 @@ function applySettingsFromURL() {
  ****************************************************/
 window.addEventListener("DOMContentLoaded", () => {
   applySettingsFromURL();
-
   document.getElementById("folder-input")?.addEventListener("change", handleFolderUpload);
   document.getElementById("start-button")?.addEventListener("click", start);
 });
