@@ -4,14 +4,22 @@
 var app = {
   tickSound: new Howl({
     src: ["assets/tick.mp3"],
-    volume: 2.0
+    volume: 1.0 // Tick fuerte
   }),
-
-  mantraSound: null,   // Howler para mantra
+  mantraSound: null,
   urls: [],
   metronome: null,
   gallery: null
 };
+
+/****************************************************
+ * DESBLOQUEO AUDIO (GESTO DE USUARIO)
+ ****************************************************/
+function unlockAudio() {
+  if (Howler.ctx && Howler.ctx.state === 'suspended') {
+    Howler.ctx.resume();
+  }
+}
 
 /****************************************************
  * SUBIDA DE IMÁGENES
@@ -26,9 +34,7 @@ function handleFolderUpload(event) {
     .map(file => URL.createObjectURL(file));
 
   const count = document.getElementById("file-count");
-  if (count) {
-    count.textContent = `${app.urls.length} archivo(s) cargados`;
-  }
+  if (count) count.textContent = `${app.urls.length} archivo(s) cargados`;
 }
 
 /****************************************************
@@ -42,7 +48,7 @@ function shuffleArray(array) {
 }
 
 /****************************************************
- * MANTRA VISUAL (ANIMADO)
+ * MANTRA VISUAL
  ****************************************************/
 function showMantra(text) {
   const el = document.getElementById("mantra-display");
@@ -51,7 +57,7 @@ function showMantra(text) {
   el.style.display = "block";
   el.textContent = text;
 
-  // Reinicia animación CSS
+  // reinicia animación CSS
   el.style.animation = "none";
   void el.offsetHeight;
   el.style.animation = "";
@@ -63,17 +69,18 @@ function showMantra(text) {
 function playMantraAudio() {
   if (!app.mantraSound) return;
 
-  app.mantraSound.stop(); // reiniciar siempre
+  app.mantraSound.stop();
   app.mantraSound.play();
 }
 
 /****************************************************
- * INICIAR EXPERIENCIA
+ * INICIAR SESIÓN
  ****************************************************/
 function start() {
-  // desbloqueo global de audio
-  Howler.volume(1.0);
+  // desbloquea audio
+  unlockAudio();
   Howler.mute(false);
+  Howler.volume(1.0);
 
   if (!app.urls.length) {
     alert("Sube una carpeta con imágenes primero.");
@@ -91,15 +98,17 @@ function start() {
 
   shuffleArray(app.urls);
 
-  // Preparar audio del mantra (MP3)
+  // preparar audio mantra
   if (mantra) {
     app.mantraSound = new Howl({
-      src: ["assets/mantra/mantra1.mp3"],
-      volume: 0.15,
+      src: ["assets/mantra/mantra1.mp3"], // reemplaza con tu mantra
+      volume: 0.15, // más suave que el tick
       preload: true,
-      html5: true   // 🔑 🔑 🔑 CLAVE ABSOLUTA
+      html5: true,
+      onplayerror: function() {
+        this.once('unlock', function() { this.play(); });
+      }
     });
-
   } else {
     app.mantraSound = null;
   }
@@ -107,12 +116,10 @@ function start() {
   let beatCount = 0;
   const intervalMs = (60 / bpm) * 1000;
 
-  // Iniciar galería
-  app.gallery = blueimp.Gallery(app.urls, {
-    onclose: stop
-  });
+  // iniciar galería
+  app.gallery = blueimp.Gallery(app.urls, { onclose: stop });
 
-  // Metrónomo principal
+  // metronomo principal
   app.metronome = setInterval(() => {
     app.tickSound.play();
     beatCount++;
@@ -137,9 +144,7 @@ function stop() {
   clearInterval(app.metronome);
   app.metronome = null;
 
-  if (app.mantraSound) {
-    app.mantraSound.stop();
-  }
+  if (app.mantraSound) app.mantraSound.stop();
 
   const el = document.getElementById("mantra-display");
   if (el) {
@@ -149,18 +154,13 @@ function stop() {
 }
 
 /****************************************************
- * AJUSTES DESDE URL (?bpm=60&next=4)
+ * AJUSTES DESDE URL
  ****************************************************/
 function applySettingsFromURL() {
   const params = new URLSearchParams(window.location.search);
 
-  if (params.get("bpm")) {
-    document.getElementById("beats-input").value = params.get("bpm");
-  }
-
-  if (params.get("next")) {
-    document.getElementById("next-input").value = params.get("next");
-  }
+  if (params.get("bpm")) document.getElementById("beats-input").value = params.get("bpm");
+  if (params.get("next")) document.getElementById("next-input").value = params.get("next");
 }
 
 /****************************************************
@@ -169,11 +169,10 @@ function applySettingsFromURL() {
 window.addEventListener("DOMContentLoaded", () => {
   applySettingsFromURL();
 
-  document.getElementById("folder-input")
-    ?.addEventListener("change", handleFolderUpload);
+  document.getElementById("folder-input")?.addEventListener("change", handleFolderUpload);
 
-  document.getElementById("start-button")
-    ?.addEventListener("click", start);
+  // Botón iniciar
+  document.getElementById("start-button")?.addEventListener("click", start);
 });
 
 // Seguridad móvil: parar al ocultar pestaña
