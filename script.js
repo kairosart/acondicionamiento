@@ -79,9 +79,8 @@ function playMantraAudio() {
 function openGallery() {
   if (!app.urls.length) return;
 
-  // Instancia persistente
+  // Modal completo de Blueimp (la X funciona)
   app.gallery = new blueimp.Gallery(app.urls, {
-    container: '#blueimp-gallery',
     carousel: false,
     onclose: stop
   });
