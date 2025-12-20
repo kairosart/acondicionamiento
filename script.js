@@ -57,7 +57,7 @@ function showMantra(text) {
   el.style.display = "block";
   el.textContent = text;
 
-  // reinicia animación CSS
+  // Reinicia animación CSS
   el.style.animation = "none";
   void el.offsetHeight;
   el.style.animation = "";
@@ -69,15 +69,26 @@ function showMantra(text) {
 function playMantraAudio() {
   if (!app.mantraSound) return;
 
-  app.mantraSound.stop();
+  app.mantraSound.stop(); // reiniciar siempre
   app.mantraSound.play();
+}
+
+/****************************************************
+ * ABRIR GALERÍA
+ ****************************************************/
+function openGallery() {
+  if (!app.urls.length) return;
+
+  app.gallery = blueimp.Gallery(app.urls, {
+    onclose: stop // detener todo al cerrar galería
+  });
 }
 
 /****************************************************
  * INICIAR SESIÓN
  ****************************************************/
 function start() {
-  unlockAudio(); // desbloquea audio con gesto de usuario
+  unlockAudio();
   Howler.mute(false);
   Howler.volume(1.0);
 
@@ -97,7 +108,7 @@ function start() {
 
   shuffleArray(app.urls);
 
-  // preparar audio mantra
+  // preparar audio del mantra
   if (mantra) {
     app.mantraSound = new Howl({
       src: ["assets/mantra/mantra1.mp3"], // reemplaza con tu mantra
@@ -116,9 +127,7 @@ function start() {
   const intervalMs = (60 / bpm) * 1000;
 
   // iniciar galería
-  app.gallery = blueimp.Gallery(app.urls, { 
-    onclose: stop 
-  });
+  openGallery();
 
   // metronomo principal
   app.metronome = setInterval(() => {
@@ -154,8 +163,10 @@ function stop() {
   }
 
   // cerrar galería si está abierta
-  if (app.gallery && app.gallery.close) app.gallery.close();
-  app.gallery = null;
+  if (app.gallery && app.gallery.close) {
+    app.gallery.close();
+    app.gallery = null;
+  }
 }
 
 /****************************************************
@@ -180,10 +191,6 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("start-button")?.addEventListener("click", start);
 });
 
-// Seguridad móvil: parar al ocultar pestaña
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) stop();
-});
-
-// Detener al cerrar ventana o pestaña
+// Seguridad móvil y PC: parar al ocultar pestaña o cerrar ventana
+document.addEventListener("visibilitychange", () => { if (document.hidden) stop(); });
 window.addEventListener("beforeunload", stop);
