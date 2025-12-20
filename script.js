@@ -33,8 +33,15 @@ document.getElementById("folder-input").addEventListener("change", e => {
 ================================ */
 function showMantra(text) {
   const el = document.getElementById("mantra-display");
-  el.textContent = text;
+  if (!el) return;
+
   el.style.display = "block";
+  el.textContent = text;
+
+  // 🔁 Reiniciar animación SIEMPRE
+  el.style.animation = "none";
+  void el.offsetHeight; // fuerza reflow
+  el.style.animation = "mantraFade 1.5s ease-in-out";
 }
 
 /* ===============================
