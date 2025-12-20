@@ -4,7 +4,7 @@
 var app = {
   tickSound: new Howl({
     src: ["assets/tick.mp3"],
-    volume: 1.0 // Tick fuerte
+    volume: 1.0 // Tick más fuerte
   }),
   mantraSound: null,
   urls: [],
@@ -77,8 +77,7 @@ function playMantraAudio() {
  * INICIAR SESIÓN
  ****************************************************/
 function start() {
-  // desbloquea audio
-  unlockAudio();
+  unlockAudio(); // desbloquea audio con gesto de usuario
   Howler.mute(false);
   Howler.volume(1.0);
 
@@ -117,7 +116,9 @@ function start() {
   const intervalMs = (60 / bpm) * 1000;
 
   // iniciar galería
-  app.gallery = blueimp.Gallery(app.urls, { onclose: stop });
+  app.gallery = blueimp.Gallery(app.urls, { 
+    onclose: stop 
+  });
 
   // metronomo principal
   app.metronome = setInterval(() => {
@@ -151,6 +152,10 @@ function stop() {
     el.style.display = "none";
     el.textContent = "";
   }
+
+  // cerrar galería si está abierta
+  if (app.gallery && app.gallery.close) app.gallery.close();
+  app.gallery = null;
 }
 
 /****************************************************
@@ -179,3 +184,6 @@ window.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) stop();
 });
+
+// Detener al cerrar ventana o pestaña
+window.addEventListener("beforeunload", stop);
