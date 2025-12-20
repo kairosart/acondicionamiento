@@ -277,3 +277,16 @@ ol, ul {
     width: 100%;
   }
 }
+
+
+
+
+/* Alinear instrucciones a la izquierda */
+#instructions {
+  text-align: left;
+}
+
+#instructions ol {
+  padding-left: 20px; /* sangría correcta de la lista */
+}
+
