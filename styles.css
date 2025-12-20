@@ -173,13 +173,13 @@ ol, ul {
 ================================ */
 #mantra-display {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 4em;
+  bottom: 40px;              /* 👈 abajo */
+  left: 50%;                 /* centrado horizontal */
+  transform: translateX(-50%);
+  font-size: 3em;            /* un poco más discreto */
   color: #fff;
   background-color: rgba(0,0,0,0.5);
-  padding: 20px 40px;
+  padding: 15px 30px;
   border-radius: 15px;
   text-align: center;
   pointer-events: none;
@@ -187,6 +187,7 @@ ol, ul {
   display: none;
   animation: fade-in-out 2s infinite ease-in-out;
 }
+
 
 @keyframes fade-in-out {
   0%, 100% { opacity: 0; }
