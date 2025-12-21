@@ -1,108 +1,113 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sissymax</title>
-  <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Sissymax</title>
+<link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon">
 
-  <!-- Blueimp Gallery -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/blueimp-gallery/2.29.0/css/blueimp-gallery.min.css">
+<!-- Blueimp Gallery -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/blueimp-gallery/2.29.0/css/blueimp-gallery.min.css">
 
-  <!-- Bootstrap -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+<!-- Bootstrap -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
 
-  <!-- Tus estilos -->
-  <link rel="stylesheet" href="styles.css">
+<!-- Tus estilos -->
+<link rel="stylesheet" href="styles.css">
 
-  <style>
-    body {
-      padding-top: 20px; /* evita que el head tape el inicio */
-      margin: 0;
-      font-family: 'Roboto', Arial, sans-serif;
-      background: #121212;
-      color: #e0e0e0;
-    }
+<style>
+  body {
+    padding-top: 20px;
+    margin: 0;
+    font-family: 'Roboto', Arial, sans-serif;
+    background: #121212;
+    color: #e0e0e0;
+    line-height: 1.6;
+  }
 
-    #banner { margin-bottom:20px; }
-    #settings .form-control, #settings .btn { font-size:1.2em; }
-    #mantra-display {
-      display:none;
-      font-size:28px;
-      margin-top:20px;
-      color:#bb86fc;
-    }
-    #guide-content {
-      max-width:90%;
-      height:85vh;
-      margin:5vh auto;
-      padding:20px;
-      background:#1e1e1e;
-      color:#e0e0e0;
-      border-radius:12px;
-      box-shadow:0 8px 25px rgba(0,0,0,0.6);
-      overflow-y:auto;
-      position:relative;
-    }
-    label.btn { padding:15px 30px; font-size:1.2em; }
-    #start-button { padding:15px 30px; font-size:1.3em; }
-    #footer a { font-size:1.1em; }
-  </style>
+  .container-fluid {
+    padding: 0 10px;
+  }
 
-  <!-- JS libs -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-gallery/2.29.0/js/blueimp-gallery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.7/howler.min.js"></script>
+  #banner { margin-bottom: 20px; }
+  #banner-logo { max-width: 80px; }
+  #banner-title { font-size: 2em; margin: 0; }
+
+  #settings form { display: flex; flex-direction: column; gap: 15px; }
+  #settings .form-group { width: 100%; }
+  #settings label, #settings .form-control, #start-button {
+    width: 100%;
+    font-size: 1.2em;
+  }
+
+  #folder-input { display: none; }
+  #file-count { display: block; text-align: center; margin-top: 5px; }
+
+  #mantra-display {
+    display: none;
+    font-size: 24px;
+    margin-top: 20px;
+    color: #bb86fc;
+  }
+
+  #guide-content {
+    max-width: 95%;
+    height: 85vh;
+    margin: 5vh auto;
+    padding: 20px;
+    background: #1e1e1e;
+    color: #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+    overflow-y: auto;
+    position: relative;
+  }
+
+  #footer a { font-size: 1.1em; }
+  button, .btn { padding: 15px; font-size: 1.2em; border-radius: 8px; }
+
+  /* Animación mantra */
+  @keyframes mantraFadeSoft {
+    0%,100% { opacity: 0; }
+    50% { opacity: 1; }
+  }
+
+  @media (max-width: 600px) {
+    #banner-title { font-size: 1.5em; }
+    #mantra-display { font-size: 20px; }
+    #start-button { font-size: 1.1em; padding: 12px; }
+  }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-gallery/2.29.0/js/blueimp-gallery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.7/howler.min.js"></script>
 </head>
 
 <body>
 
 <div class="container-fluid text-center">
-
-  <!-- BANNER -->
   <div id="banner">
-    <div id="banner-left">
-      <img src="assets/logo.png" alt="Logo de Sissymax" id="banner-logo">
-      <h1 id="banner-title">Sissymax</h1>
-    </div>
+    <img src="assets/logo.png" alt="Logo de Sissymax" id="banner-logo">
+    <h1 id="banner-title">Sissymax</h1>
   </div>
 
-  <!-- AJUSTES -->
   <div id="settings">
-    <form class="form-horizontal" autocomplete="off">
-      <div class="form-group">
-        <label class="btn btn-primary" for="folder-input">Subir carpeta</label>
-        <input type="file" id="folder-input" webkitdirectory multiple style="display:none;">
-        <div>
-          <span id="file-count">0 archivos cargados</span>
-        </div>
-      </div>
+    <form autocomplete="off">
+      <label class="btn btn-primary" for="folder-input">Subir carpeta</label>
+      <input type="file" id="folder-input" webkitdirectory multiple>
+      <span id="file-count">0 archivos cargados</span>
 
-      <div class="form-group">
-        <label for="beats-input">BPM:</label>
-        <input class="form-control" id="beats-input" type="number">
-      </div>
-
-      <div class="form-group">
-        <label for="next-input">Golpes por imagen:</label>
-        <input class="form-control" id="next-input" type="number">
-      </div>
-
+      <input class="form-control" id="beats-input" type="number" placeholder="BPM">
+      <input class="form-control" id="next-input" type="number" placeholder="Golpes por imagen">
       <textarea class="form-control" id="mantra-input" rows="3" placeholder="Escribe tu mantra"></textarea>
-      <br>
 
-      <div class="form-group d-flex justify-content-center">
-        <button id="start-button" type="button" class="btn btn-primary btn-lg">
-          Iniciar
-        </button>
-      </div>
+      <button id="start-button" type="button" class="btn btn-primary">Iniciar</button>
     </form>
   </div>
 </div>
 
-<!-- MANTRA DISPLAY -->
 <div id="mantra-display" class="text-center"></div>
 
-<!-- GALERÍA -->
 <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">
   <div class="slides"></div>
   <a class="prev">‹</a>
@@ -111,7 +116,6 @@
   <ol class="indicator"></ol>
 </div>
 
-<!-- FOOTER -->
 <footer id="footer" class="text-center" style="margin-top:60px; padding-bottom:40px;">
   <h5>Enlaces</h5>
   <p>
@@ -120,7 +124,6 @@
     <a href="#" id="open-privacy-link" style="color:#bb86fc; text-decoration:underline; font-weight:bold;">🔒 Política de Privacidad</a>
   </p>
 
-  <!-- MODAL -->
   <div id="guide-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:10000;">
     <div id="guide-content">
       <span id="close-guide" style="position:absolute; top:15px; right:20px; font-size:28px; font-weight:bold; cursor:pointer; color:#bb86fc;">&times;</span>
@@ -129,10 +132,8 @@
   </div>
 </footer>
 
-<!-- JS -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="script.js"></script>
-
 </body>
 </html>

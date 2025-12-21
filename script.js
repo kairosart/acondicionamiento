@@ -10,9 +10,7 @@ const app = {
   mantraSound: null
 };
 
-/* ===============================
-   SUBIR IMÁGENES
-================================ */
+// Subir imágenes
 document.getElementById("folder-input").addEventListener("change", e => {
   app.urls = Array.from(e.target.files)
     .filter(f => f.type.startsWith("image/"))
@@ -22,9 +20,7 @@ document.getElementById("folder-input").addEventListener("change", e => {
     app.urls.length + " archivos cargados";
 });
 
-/* ===============================
-   MANTRA VISUAL
-================================ */
+// Mostrar mantra con fade
 function showMantra(text, durationMs) {
   const el = document.getElementById("mantra-display");
   if (!el) return;
@@ -35,29 +31,23 @@ function showMantra(text, durationMs) {
   el.style.animation = `mantraFadeSoft ${durationMs}ms ease-in-out`;
 }
 
-/* ===============================
-   PARAR AUDIO Y TIMERS
-================================ */
+// Parar sesión
 function stopSession() {
-  if(app.metronome){ clearInterval(app.metronome); app.metronome = null; }
+  if(app.metronome){ clearInterval(app.metronome); app.metronome=null; }
   app.tick.stop();
-  if(app.mantraSound){ app.mantraSound.stop(); app.mantraSound = null; }
+  if(app.mantraSound){ app.mantraSound.stop(); app.mantraSound=null; }
   const el = document.getElementById("mantra-display");
-  el.style.display = "none";
-  el.textContent = "";
+  el.style.display="none";
+  el.textContent="";
 }
 
-/* ===============================
-   INICIAR
-================================ */
-document.getElementById("start-button").addEventListener("click", () => {
-
+// Iniciar sesión
+document.getElementById("start-button").addEventListener("click", ()=>{
   if(!app.urls.length){ alert("Sube imágenes primero"); return; }
 
   app.bpm = parseInt(document.getElementById("beats-input").value);
   app.next = parseInt(document.getElementById("next-input").value) || 0;
   app.mantra = document.getElementById("mantra-input").value.trim();
-
   if(!app.bpm || app.bpm<=0){ alert("BPM inválido"); return; }
 
   stopSession();
@@ -67,9 +57,7 @@ document.getElementById("start-button").addEventListener("click", () => {
     app.mantraSound = new Howl({ src:["assets/mantra/mantra1.mp3"], volume:0.15, html5:true });
   }
 
-  app.gallery = blueimp.Gallery(app.urls, {
-    onclose: ()=>{ stopSession(); app.gallery=null; }
-  });
+  app.gallery = blueimp.Gallery(app.urls, { onclose: ()=>{ stopSession(); app.gallery=null; } });
 
   const interval = (60 / app.bpm) * 1000;
   app.metronome = setInterval(()=>{
@@ -80,9 +68,7 @@ document.getElementById("start-button").addEventListener("click", () => {
   }, interval);
 });
 
-/* ===============================
-   CERRAR MODAL
-================================ */
+// MODAL
 const modal = document.getElementById('guide-modal');
 const inner = document.getElementById('modal-inner-content');
 const openGuide = document.getElementById('open-guide-link');
@@ -110,9 +96,7 @@ openPrivacy.addEventListener('click', e=>{ e.preventDefault(); openModal('docume
 closeBtn.addEventListener('click', closeModal);
 modal.addEventListener('click', e=>{ if(e.target===modal) closeModal(); });
 
-/* ===============================
-   SEGURIDAD: CAMBIO DE PESTAÑA
-================================ */
+// Seguridad: cambio de pestaña
 document.addEventListener("visibilitychange", ()=>{
   if(document.hidden) stopSession();
 });
