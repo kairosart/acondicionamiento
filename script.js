@@ -6,13 +6,7 @@ const app = {
   mantra: "",
   bpm: 0,
   next: 0,
-
-  tick: new Howl({
-    src: ["assets/tick.mp3"],
-    volume: 1.0,
-    html5: true
-  }),
-
+  tick: new Howl({ src:["assets/tick.mp3"], volume:1.0, html5:true }),
   mantraSound: null
 };
 
@@ -40,66 +34,42 @@ function showMantra(text, durationMs) {
 
   el.style.animation = "none";
   void el.offsetHeight;
-
   el.style.animation = `mantraFadeSoft ${durationMs}ms ease-in-out`;
 }
 
-
 /* ===============================
-   PARAR AUDIO Y TIMERS (NO GALERÍA)
+   PARAR AUDIO Y TIMERS
 ================================ */
 function stopSession() {
-  if (app.metronome) {
-    clearInterval(app.metronome);
-    app.metronome = null;
-  }
-
+  if (app.metronome) { clearInterval(app.metronome); app.metronome = null; }
   app.tick.stop();
-
-  if (app.mantraSound) {
-    app.mantraSound.stop();
-  }
-
+  if (app.mantraSound) app.mantraSound.stop();
   const el = document.getElementById("mantra-display");
   el.style.display = "none";
   el.textContent = "";
 }
 
 /* ===============================
-   INICIAR
+   INICIAR SESIÓN
 ================================ */
 document.getElementById("start-button").addEventListener("click", () => {
-
-  if (!app.urls.length) {
-    alert("Sube imágenes primero");
-    return;
-  }
+  if (!app.urls.length) { alert("Sube imágenes primero"); return; }
 
   app.bpm = parseInt(document.getElementById("beats-input").value);
   app.next = parseInt(document.getElementById("next-input").value) || 0;
   app.mantra = document.getElementById("mantra-input").value.trim();
 
-  if (!app.bpm || app.bpm <= 0) {
-    alert("BPM inválido");
-    return;
-  }
+  if (!app.bpm || app.bpm <= 0) { alert("BPM inválido"); return; }
 
   stopSession();
   app.beatCount = 0;
 
   if (app.mantra) {
-    app.mantraSound = new Howl({
-      src: ["assets/mantra/mantra1.mp3"],
-      volume: 0.15,
-      html5: true
-    });
+    app.mantraSound = new Howl({ src:["assets/mantra/mantra1.mp3"], volume:0.15, html5:true });
   }
 
   app.gallery = blueimp.Gallery(app.urls, {
-    onclose: () => {
-      stopSession();   // 👈 SOLO esto
-      app.gallery = null;
-    }
+    onclose: () => { stopSession(); app.gallery = null; }
   });
 
   const interval = (60 / app.bpm) * 1000;
@@ -109,7 +79,7 @@ document.getElementById("start-button").addEventListener("click", () => {
     app.beatCount++;
 
     if (app.mantra) {
-      showMantra(app.mantra, intervalMs);
+      showMantra(app.mantra, interval);
       if (app.mantraSound) app.mantraSound.play();
     }
 
@@ -122,8 +92,35 @@ document.getElementById("start-button").addEventListener("click", () => {
 /* ===============================
    SEGURIDAD: CAMBIO DE PESTAÑA
 ================================ */
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) {
-    stopSession();
-  }
-});
+document.addEventListener("visibilitychange", () => { if(document.hidden) stopSession(); });
+
+/* ===============================
+   MODAL GUÍA / PRIVACIDAD
+================================ */
+const modal = document.getElementById('guide-modal');
+const inner = document.getElementById('modal-inner-content');
+const openGuide = document.getElementById('open-guide-link');
+const openPrivacy = document.getElementById('open-privacy-link');
+const closeBtn = document.getElementById('close-guide');
+
+function openModal(url){
+  modal.style.display='block';
+  document.body.style.overflow='hidden';
+  inner.innerHTML='<p>Cargando…</p>';
+
+  fetch(url)
+    .then(r=>r.text())
+    .then(html=>inner.innerHTML=html)
+    .catch(()=>inner.innerHTML='<p>Error al cargar el contenido.</p>');
+}
+
+function closeModal(){
+  modal.style.display='none';
+  document.body.style.overflow='';
+  inner.innerHTML='';
+}
+
+openGuide.addEventListener('click', e=>{ e.preventDefault(); openModal('documents/guia.html'); });
+openPrivacy.addEventListener('click', e=>{ e.preventDefault(); openModal('documents/privacy.html'); });
+closeBtn.addEventListener('click', closeModal);
+modal.addEventListener('click', e=>{ if(e.target===modal) closeModal(); });
