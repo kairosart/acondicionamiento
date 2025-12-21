@@ -96,12 +96,18 @@
   <h5>Enlaces</h5>
 
   <!-- Enlace al final -->
-  <p style="text-align:center; margin-top:40px;">
+  <p style="text-align:center; margin-top:10px;">
     <a href="#" id="open-guide-link"
        style="color:#bb86fc; text-decoration:underline; font-weight:bold;">
-      Leer la Guía de Uso / Política de Privacidad
+      📖 Guía de Uso
+    </a>
+    &nbsp;|&nbsp;
+    <a href="#" id="open-privacy-link"
+       style="color:#bb86fc; text-decoration:underline; font-weight:bold;">
+      🔒 Política de Privacidad
     </a>
   </p>
+
 
   <!-- MODAL -->
   <div id="guide-modal"
@@ -111,28 +117,25 @@
          inset:0;
          background:rgba(0,0,0,0.85);
          z-index:10000;
-         overflow-y:auto;
        ">
 
-    <!-- CONTENEDOR -->
-    <div
-      style="
-        background:#1e1e1e;
-        color:#e0e0e0;
+    <div id="guide-content"
+         style="
+           background:#1e1e1e;
+           color:#e0e0e0;
 
-        max-width:900px;
-        height:90vh;
-        margin:5vh auto;
+           max-width:900px;
+           height:90vh;
+           margin:5vh auto;
 
-        padding:30px;
-        border-radius:12px;
-        box-shadow:0 8px 25px rgba(0,0,0,0.6);
+           padding:30px;
+           border-radius:12px;
+           box-shadow:0 8px 25px rgba(0,0,0,0.6);
 
-        overflow-y:auto;
-        position:relative;
-      ">
+           overflow-y:auto;
+           position:relative;
+         ">
 
-      <!-- CERRAR X -->
       <span id="close-guide"
             style="
               position:absolute;
@@ -144,86 +147,59 @@
               color:#bb86fc;
             ">&times;</span>
 
-      <!-- TÍTULO -->
-      <h1 style="text-align:center; color:#bb86fc;">
-        📖 Guía de uso — Sissymax
-      </h1>
-
-      <!-- CONTENIDO CARGADO -->
-      <div id="guide-content"
-           style="margin-top:20px; line-height:1.6; text-align:left;">
-        <p>Cargando guía…</p>
-      </div>
-
-      <!-- BOTÓN CERRAR -->
-      <div style="text-align:center; margin-top:30px;">
-        <button id="close-guide-btn"
-                class="btn"
-                style="
-                  background:#bb86fc;
-                  color:#121212;
-                  padding:12px 24px;
-                  border-radius:8px;
-                  font-size:16px;
-                ">
-          Cerrar
-        </button>
-      </div>
+      <!-- AQUÍ SE INYECTA GUÍA O PRIVACIDAD -->
+      <div id="modal-inner-content"></div>
 
     </div>
   </div>
 
-  <!-- ENLACE EXTERNO PRIVACIDAD (opcional) -->
-  <ul style="margin-top:20px;">
-    <li>
-      <a href="https://kairosart.github.io/acondicionamiento/documents/original_privacy.html"
-         target="_blank">
-        Privacidad
-      </a>
-    </li>
-  </ul>
-
 </footer>
+
 
 <!-- SCRIPT -->
 <script>
   const modal = document.getElementById('guide-modal');
-  const openLink = document.getElementById('open-guide-link');
-  const closeX = document.getElementById('close-guide');
-  const closeBtn = document.getElementById('close-guide-btn');
-  const guideContent = document.getElementById('guide-content');
+  const inner = document.getElementById('modal-inner-content');
 
-  let loaded = false;
+  const openGuide = document.getElementById('open-guide-link');
+  const openPrivacy = document.getElementById('open-privacy-link');
+  const closeBtn = document.getElementById('close-guide');
 
-  openLink.addEventListener('click', (e) => {
-    e.preventDefault();
+  function openModal(url) {
     modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    inner.innerHTML = '<p>Cargando…</p>';
 
-    if (!loaded) {
-      fetch('documents/guia.html')
-        .then(res => res.text())
-        .then(html => {
-          guideContent.innerHTML = html;
-          loaded = true;
-        })
-        .catch(() => {
-          guideContent.innerHTML = '<p>Error al cargar la guía.</p>';
-        });
-    }
-  });
+    fetch(url)
+      .then(r => r.text())
+      .then(html => {
+        inner.innerHTML = html;
+      })
+      .catch(() => {
+        inner.innerHTML = '<p>Error al cargar el contenido.</p>';
+      });
+  }
 
-  closeX.addEventListener('click', () => {
+  function closeModal() {
     modal.style.display = 'none';
+    document.body.style.overflow = '';
+    inner.innerHTML = '';
+  }
+
+  openGuide.addEventListener('click', (e) => {
+    e.preventDefault();
+    openModal('documents/guia.html');
   });
 
-  closeBtn.addEventListener('click', () => {
-    modal.style.display = 'none';
+  openPrivacy.addEventListener('click', (e) => {
+    e.preventDefault();
+    openModal('documents/privacy.html');
   });
+
+  closeBtn.addEventListener('click', closeModal);
 
   modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      modal.style.display = 'none';
-    }
+    if (e.target === modal) closeModal();
   });
 </script>
 
