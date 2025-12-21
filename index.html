@@ -16,63 +16,155 @@
   <!-- Tus estilos -->
   <link rel="stylesheet" href="styles.css">
 
-  <!-- JS libs -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-gallery/2.29.0/js/blueimp-gallery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.7/howler.min.js"></script>
+  <style>
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      background: #121212;
+      color: #e0e0e0;
+      line-height: 1.6;
+      margin: 0;
+      padding-top: 120px; /* espacio para banner fijo */
+    }
+
+    #banner {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: #1e1e1e;
+      z-index: 1000;
+      padding: 15px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+
+    #banner img {
+      height: 50px;
+      margin-right: 15px;
+    }
+
+    #banner h1 {
+      color: #bb86fc;
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .container-fluid {
+      max-width: 900px;
+      margin: auto;
+    }
+
+    #settings {
+      background: #1e1e1e;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+    }
+
+    .form-control {
+      background: #121212;
+      color: #e0e0e0;
+      border: 1px solid #333;
+    }
+
+    .btn-primary {
+      background-color: #bb86fc;
+      border: none;
+      color: #121212;
+    }
+
+    .btn-primary:hover {
+      background-color: #9a4fff;
+    }
+
+    #mantra-display {
+      margin-top: 30px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    footer {
+      margin-top: 60px;
+      padding-bottom: 40px;
+    }
+
+    footer a {
+      color: #bb86fc;
+      text-decoration: underline;
+      font-weight: bold;
+    }
+
+    /* MODAL */
+    #guide-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 10000;
+    }
+
+    #guide-content {
+      background: #1e1e1e;
+      color: #e0e0e0;
+      max-width: 900px;
+      height: 90vh;
+      margin: 5vh auto;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+      overflow-y: auto;
+      position: relative;
+    }
+
+    #close-guide {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #bb86fc;
+    }
+  </style>
 </head>
 
 <body>
 
+<!-- BANNER -->
+<div id="banner">
+  <img src="assets/logo.png" alt="Logo de Sissymax">
+  <h1>Sissymax</h1>
+</div>
+
+<!-- AJUSTES -->
 <div class="container-fluid text-center">
-
-  <!-- BANNER -->
-  <div id="banner">
-    <div id="banner-left">
-      <img src="assets/logo.png" alt="Logo de Sissymax" id="banner-logo">
-      <h1 id="banner-title">Sissymax</h1>
-    </div>
-  </div>
-
-  
-
-  <!-- AJUSTES -->
   <div id="settings">
     <form class="form-horizontal" autocomplete="off">
-
-      <!-- Carpeta -->
       <div class="form-group">
         <label class="btn btn-primary" for="folder-input">Subir carpeta</label>
         <input type="file" id="folder-input" webkitdirectory multiple style="display:none;">
         <div>
-          <span id="file-count" style="color:#EDEDED;">0 archivos cargados</span>
+          <span id="file-count">0 archivos cargados</span>
         </div>
       </div>
 
-      <!-- BPM -->
       <div class="form-group">
         <label for="beats-input">BPM:</label>
         <input class="form-control" id="beats-input" type="number">
       </div>
 
-      <!-- NEXT -->
       <div class="form-group">
         <label for="next-input">Golpes por imagen:</label>
         <input class="form-control" id="next-input" type="number">
       </div>
 
-      <!-- MANTRA -->
       <textarea class="form-control" id="mantra-input" rows="3" placeholder="Escribe tu mantra"></textarea>
       <br>
 
-
-      <!-- START -->
-      <div class="form-group d-flex justify-content-center">
-        <button id="start-button" type="button" class="btn btn-primary btn-lg">
-          Iniciar
-        </button>
+      <div class="form-group">
+        <button id="start-button" type="button" class="btn btn-primary btn-lg">Iniciar</button>
       </div>
-
-
     </form>
   </div>
 </div>
@@ -89,78 +181,27 @@
   <ol class="indicator"></ol>
 </div>
 
-
 <!-- FOOTER -->
-<footer id="footer" class="text-center" style="margin-top:60px; padding-bottom:40px;">
-
+<footer class="text-center">
   <h5>Enlaces</h5>
-
-  <!-- Enlace al final -->
-  <p style="text-align:center; margin-top:10px;">
-    <a href="#" id="open-guide-link"
-       style="color:#bb86fc; text-decoration:underline; font-weight:bold;">
-      📖 Guía de Uso
-    </a>
+  <p>
+    <a href="#" id="open-guide-link">📖 Guía de Uso</a>
     &nbsp;|&nbsp;
-    <a href="#" id="open-privacy-link"
-       style="color:#bb86fc; text-decoration:underline; font-weight:bold;">
-      🔒 Política de Privacidad
-    </a>
+    <a href="#" id="open-privacy-link">🔒 Política de Privacidad</a>
   </p>
 
-
-  <!-- MODAL -->
-  <div id="guide-modal"
-       style="
-         display:none;
-         position:fixed;
-         inset:0;
-         background:rgba(0,0,0,0.85);
-         z-index:10000;
-       ">
-
-    <div id="guide-content"
-         style="
-           background:#1e1e1e;
-           color:#e0e0e0;
-
-           max-width:900px;
-           height:90vh;
-           margin:5vh auto;
-
-           padding:30px;
-           border-radius:12px;
-           box-shadow:0 8px 25px rgba(0,0,0,0.6);
-
-           overflow-y:auto;
-           position:relative;
-         ">
-
-      <span id="close-guide"
-            style="
-              position:absolute;
-              top:15px;
-              right:20px;
-              font-size:28px;
-              font-weight:bold;
-              cursor:pointer;
-              color:#bb86fc;
-            ">&times;</span>
-
-      <!-- AQUÍ SE INYECTA GUÍA O PRIVACIDAD -->
+  <div id="guide-modal">
+    <div id="guide-content">
+      <span id="close-guide">&times;</span>
       <div id="modal-inner-content"></div>
-
     </div>
   </div>
-
 </footer>
-
 
 <!-- SCRIPT -->
 <script>
   const modal = document.getElementById('guide-modal');
   const inner = document.getElementById('modal-inner-content');
-
   const openGuide = document.getElementById('open-guide-link');
   const openPrivacy = document.getElementById('open-privacy-link');
   const closeBtn = document.getElementById('close-guide');
@@ -169,15 +210,10 @@
     modal.style.display = 'block';
     document.body.style.overflow = 'hidden';
     inner.innerHTML = '<p>Cargando…</p>';
-
     fetch(url)
       .then(r => r.text())
-      .then(html => {
-        inner.innerHTML = html;
-      })
-      .catch(() => {
-        inner.innerHTML = '<p>Error al cargar el contenido.</p>';
-      });
+      .then(html => { inner.innerHTML = html; })
+      .catch(() => { inner.innerHTML = '<p>Error al cargar el contenido.</p>'; });
   }
 
   function closeModal() {
@@ -186,25 +222,12 @@
     inner.innerHTML = '';
   }
 
-  openGuide.addEventListener('click', (e) => {
-    e.preventDefault();
-    openModal('documents/guia.html');
-  });
-
-  openPrivacy.addEventListener('click', (e) => {
-    e.preventDefault();
-    openModal('documents/privacy.html');
-  });
-
+  openGuide.addEventListener('click', e => { e.preventDefault(); openModal('documents/guia.html'); });
+  openPrivacy.addEventListener('click', e => { e.preventDefault(); openModal('documents/privacy.html'); });
   closeBtn.addEventListener('click', closeModal);
-
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
-  });
+  modal.addEventListener('click', e => { if(e.target === modal) closeModal(); });
 </script>
 
-
-<!-- JS -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="script.js"></script>
