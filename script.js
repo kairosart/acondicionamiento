@@ -31,14 +31,17 @@ document.getElementById("folder-input").addEventListener("change", e => {
 /* ===============================
    MANTRA VISUAL
 ================================ */
-function showMantra(text) {
+function showMantra(text, durationMs) {
   const el = document.getElementById("mantra-display");
+  if (!el) return;
+
   el.style.display = "block";
   el.textContent = text;
 
   el.style.animation = "none";
   void el.offsetHeight;
-  el.style.animation = "mantraFade 1.5s ease-in-out";
+
+  el.style.animation = `mantraFadeSoft ${durationMs}ms ease-in-out`;
 }
 
 
@@ -106,7 +109,7 @@ document.getElementById("start-button").addEventListener("click", () => {
     app.beatCount++;
 
     if (app.mantra) {
-      showMantra(app.mantra);
+      showMantra(app.mantra, intervalMs);
       if (app.mantraSound) app.mantraSound.play();
     }
 
