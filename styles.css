@@ -59,3 +59,7 @@ label.btn { width:100%; padding:12px; font-size:16px; }
   #mantra-display { font-size:1.4em; bottom:20%; padding:14px 20px; }
   #settings { max-width:95%; }
 }
+
+#folder-input {
+  display: none; /* oculta el input nativo */
+}
