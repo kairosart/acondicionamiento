@@ -1,27 +1,118 @@
-<!-- ENLACES EN EL FOOTER -->
-<p style="text-align:center; margin-top:10px;">
-  <a href="#" id="open-guide" style="color:#bb86fc; text-decoration:underline; font-weight:bold;">📖 Guía de Uso</a>
-  &nbsp;|&nbsp;
-  <a href="#" id="open-privacy" style="color:#bb86fc; text-decoration:underline; font-weight:bold;">🔒 Política de Privacidad</a>
-</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Sissymax</title>
+<link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon">
+
+<!-- Blueimp Gallery -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/blueimp-gallery/2.29.0/css/blueimp-gallery.min.css">
+
+<!-- Bootstrap -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+
+<!-- Estilos -->
+<link rel="stylesheet" href="styles.css">
+
+<!-- JS libs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-gallery/2.29.0/js/blueimp-gallery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.7/howler.min.js"></script>
+</head>
+
+<body>
+
+<div class="container-fluid text-center">
+  <!-- BANNER -->
+  <div id="banner">
+    <img src="assets/logo.png" id="banner-logo" alt="Logo" style="height:48px;">
+    <h1 id="banner-title">Sissymax</h1>
+  </div>
+
+  <!-- FORMULARIO AJUSTES -->
+  <div id="settings"> 
+    <form class="form-horizontal" autocomplete="off"> 
+      <div id="folder-group" class="form-group"> 
+        <div class="folder-input-container"> 
+          <label class="btn btn-primary" for="folder-input">Upload Folder</label> 
+          <input type="file" id="folder-input" webkitdirectory directory multiple class="form-control" style="display: none;"> 
+        </div> 
+        <div class="file-count-container"> 
+          <span id="file-count" style="color: #EDEDED; font-size: 0.9em;">0 file(s) uploaded</span> 
+        </div> 
+      </div> 
+
+      <div id="beats-group" class="form-group"> 
+        <label class="control-label" for="beats-input">BPM:</label> 
+        <input class="form-control" id="beats-input" type="number"> 
+      </div> 
+
+      <div id="next-group" class="form-group"> 
+        <label class="control-label" for="next-input">Beats per image:</label> 
+        <input class="form-control" id="next-input" type="number"> 
+      </div> 
+
+      <div id="mantra-group" class="form-group"> 
+        <div class="mantra-input-container"> 
+          <label class="control-label" for="mantra-input">Mantra:</label> 
+          <input class="form-control" id="mantra-input" type="text" placeholder="Enter your mantra"> 
+        </div> 
+        <div class="voice-select-container"> 
+          <label class="control-label" for="voice-select">Voice:</label> 
+          <select class="form-control" id="voice-select"> 
+            <option value="">Loading voices...</option> 
+          </select> 
+        </div> 
+      </div> 
+
+      <div id="start-button-group" class="form-group"> 
+        <button id="start-button" type="button" class="btn btn-primary">Start</button> 
+      </div> 
+    </form> 
+  </div> 
+</div> 
+
+
+<!-- MANTRA DISPLAY -->
+<div id="mantra-display"></div>
+
+<!-- GALERÍA -->
+<div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">
+  <div class="slides"></div>
+  <a class="prev">‹</a>
+  <a class="next">›</a>
+  <a class="close">×</a>
+  <ol class="indicator"></ol>
+</div>
+
+<!-- FOOTER -->
+<footer id="footer" class="text-center" style="margin-top:40px; padding-bottom:40px;">
+  <h5>Enlaces</h5>
+  <p>
+    <a href="#" id="open-guide" style="color:#bb86fc; text-decoration:underline; font-weight:bold;">📖 Guía de Uso</a>
+    &nbsp;|&nbsp;
+    <a href="#" id="open-privacy" style="color:#bb86fc; text-decoration:underline; font-weight:bold;">🔒 Política de Privacidad</a>
+  </p>
+</footer>
 
 <!-- MODAL -->
 <div id="guide-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:10000; padding:10px;">
   <div id="guide-content" style="background:#1e1e1e; color:#e0e0e0; max-width:95%; margin:5vh auto; padding:20px; border-radius:12px; overflow-y:auto; position:relative; text-align:left; font-size:16px; height:90vh;">
-    
     <!-- Cerrar superior -->
     <span id="close-guide" style="position:absolute; top:10px; right:15px; font-size:28px; font-weight:bold; cursor:pointer; color:#bb86fc;">&times;</span>
-    
-    <!-- CONTENIDO DINÁMICO -->
+    <!-- Contenido dinámico -->
     <div id="modal-inner-content"></div>
-
     <!-- Cerrar inferior -->
     <div style="text-align:center; margin-top:30px;">
       <button id="close-guide-btn" class="btn" style="background:#bb86fc; color:#121212; padding:12px 24px; border-radius:8px; font-size:16px;">Cerrar</button>
     </div>
-
   </div>
 </div>
+
+<!-- JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="script.js"></script>
 
 <script>
   const modal = document.getElementById('guide-modal');
@@ -31,29 +122,29 @@
   const closeBottom = document.getElementById('close-guide-btn');
   const inner = document.getElementById('modal-inner-content');
 
-  function openModal(url) {
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-    inner.innerHTML = '<p>Cargando…</p>';
+  function openModal(url){
+    modal.style.display='block';
+    document.body.style.overflow='hidden';
+    inner.innerHTML='<p>Cargando…</p>';
     fetch(url)
-      .then(r => r.text())
-      .then(html => { inner.innerHTML = html; })
-      .catch(() => { inner.innerHTML = '<p>Error al cargar el contenido.</p>'; });
+      .then(r=>r.text())
+      .then(html=>{ inner.innerHTML=html; })
+      .catch(()=>{ inner.innerHTML='<p>Error al cargar el contenido.</p>'; });
   }
 
-  function closeModal() {
-    modal.style.display = 'none';
-    document.body.style.overflow = '';
-    inner.innerHTML = '';
+  function closeModal(){
+    modal.style.display='none';
+    document.body.style.overflow='';
+    inner.innerHTML='';
   }
 
-  openGuide.addEventListener('click', e => { e.preventDefault(); openModal('documents/guia.html'); });
-  openPrivacy.addEventListener('click', e => { e.preventDefault(); openModal('documents/privacy.html'); });
+  openGuide.addEventListener('click', e=>{ e.preventDefault(); openModal('documents/guia.html'); });
+  openPrivacy.addEventListener('click', e=>{ e.preventDefault(); openModal('documents/privacy.html'); });
   closeTop.addEventListener('click', closeModal);
   closeBottom.addEventListener('click', closeModal);
 
-  // Cerrar al hacer clic fuera del contenido
-  window.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
-  });
+  window.addEventListener('click', e=>{ if(e.target===modal) closeModal(); });
 </script>
+
+</body>
+</html>
