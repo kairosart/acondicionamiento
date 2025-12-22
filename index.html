@@ -25,7 +25,7 @@
 <div class="container-fluid text-center">
   <!-- BANNER -->
   <div id="banner">
-    <img src="assets/logo.png" id="banner-logo" alt="Logo" style="height:48px;">
+    <img src="assets/logo.png" id="banner-logo" alt="Logo">
     <h1 id="banner-title">Sissymax</h1>
   </div>
 
@@ -65,7 +65,7 @@
 </div>
 
 <!-- FOOTER -->
-<footer id="footer" class="text-center" style="margin-top:40px; padding-bottom:40px;">
+<footer id="footer" class="text-center">
   <h5>Enlaces</h5>
   <p>
     <a href="#" id="open-guide" style="color:#bb86fc; text-decoration:underline; font-weight:bold;">📖 Guía de Uso</a>
@@ -75,15 +75,12 @@
 </footer>
 
 <!-- MODAL -->
-<div id="guide-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:10000; padding:10px;">
-  <div id="guide-content" style="background:#1e1e1e; color:#e0e0e0; max-width:95%; margin:5vh auto; padding:20px; border-radius:12px; overflow-y:auto; position:relative; text-align:left; font-size:16px; height:90vh;">
-    <!-- Cerrar superior -->
-    <span id="close-guide" style="position:absolute; top:10px; right:15px; font-size:28px; font-weight:bold; cursor:pointer; color:#bb86fc;">&times;</span>
-    <!-- Contenido dinámico -->
+<div id="guide-modal">
+  <div id="guide-content">
+    <span id="close-guide">&times;</span>
     <div id="modal-inner-content"></div>
-    <!-- Cerrar inferior -->
     <div style="text-align:center; margin-top:30px;">
-      <button id="close-guide-btn" class="btn" style="background:#bb86fc; color:#121212; padding:12px 24px; border-radius:8px; font-size:16px;">Cerrar</button>
+      <button id="close-guide-btn" class="btn">Cerrar</button>
     </div>
   </div>
 </div>
@@ -92,38 +89,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="script.js"></script>
-
-<script>
-  const modal = document.getElementById('guide-modal');
-  const openGuide = document.getElementById('open-guide');
-  const openPrivacy = document.getElementById('open-privacy');
-  const closeTop = document.getElementById('close-guide');
-  const closeBottom = document.getElementById('close-guide-btn');
-  const inner = document.getElementById('modal-inner-content');
-
-  function openModal(url){
-    modal.style.display='block';
-    document.body.style.overflow='hidden';
-    inner.innerHTML='<p>Cargando…</p>';
-    fetch(url)
-      .then(r=>r.text())
-      .then(html=>{ inner.innerHTML=html; })
-      .catch(()=>{ inner.innerHTML='<p>Error al cargar el contenido.</p>'; });
-  }
-
-  function closeModal(){
-    modal.style.display='none';
-    document.body.style.overflow='';
-    inner.innerHTML='';
-  }
-
-  openGuide.addEventListener('click', e=>{ e.preventDefault(); openModal('documents/guia.html'); });
-  openPrivacy.addEventListener('click', e=>{ e.preventDefault(); openModal('documents/privacy.html'); });
-  closeTop.addEventListener('click', closeModal);
-  closeBottom.addEventListener('click', closeModal);
-
-  window.addEventListener('click', e=>{ if(e.target===modal) closeModal(); });
-</script>
 
 </body>
 </html>

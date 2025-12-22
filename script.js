@@ -34,9 +34,7 @@ function showMantra(text, durationMs) {
 
   el.style.animation = `mantraFadeSoft ${durationMs}ms ease-in-out`;
 
-  setTimeout(() => {
-    el.style.opacity = "0";
-  }, durationMs);
+  setTimeout(() => { el.style.opacity = "0"; }, durationMs);
 }
 
 // Parar sesión
@@ -76,43 +74,35 @@ document.getElementById("start-button").addEventListener("click", ()=>{
   }, interval);
 });
 
-// ===============================
-// MODAL GUIA / PRIVACIDAD
-// ===============================
+// MODAL
 const modal = document.getElementById('guide-modal');
+const openGuide = document.getElementById('open-guide');
+const openPrivacy = document.getElementById('open-privacy');
+const closeTop = document.getElementById('close-guide');
+const closeBottom = document.getElementById('close-guide-btn');
 const inner = document.getElementById('modal-inner-content');
-const openGuide = document.getElementById('open-guide-link');
-const openPrivacy = document.getElementById('open-privacy-link');
-const closeBtn = document.getElementById('close-guide');
 
-function openModal(url) {
+function openModal(url){
   modal.style.display='block';
   document.body.style.overflow='hidden';
-  inner.innerHTML='<p style="text-align:center; color:#fff;">Cargando…</p>';
-
+  inner.innerHTML='<p>Cargando…</p>';
   fetch(url)
-    .then(r => r.text())
-    .then(html => {
-      inner.innerHTML = html;
-    })
-    .catch(() => {
-      inner.innerHTML = '<p style="color:#ff5555;">Error al cargar el contenido.</p>';
-    });
+    .then(r=>r.text())
+    .then(html=>{ inner.innerHTML=html; })
+    .catch(()=>{ inner.innerHTML='<p>Error al cargar el contenido.</p>'; });
 }
 
-function closeModal() {
+function closeModal(){
   modal.style.display='none';
   document.body.style.overflow='';
   inner.innerHTML='';
 }
 
-// Abrir modal
-openGuide.addEventListener('click', e => { e.preventDefault(); openModal('documents/guia.html'); });
-openPrivacy.addEventListener('click', e => { e.preventDefault(); openModal('documents/privacy.html'); });
-
-// Cerrar modal
-closeBtn.addEventListener('click', closeModal);
-modal.addEventListener('click', e => { if(e.target===modal) closeModal(); });
+openGuide.addEventListener('click', e=>{ e.preventDefault(); openModal('documents/guia.html'); });
+openPrivacy.addEventListener('click', e=>{ e.preventDefault(); openModal('documents/privacy.html'); });
+closeTop.addEventListener('click', closeModal);
+closeBottom.addEventListener('click', closeModal);
+window.addEventListener('click', e=>{ if(e.target===modal) closeModal(); });
 
 // Seguridad: cambio de pestaña
 document.addEventListener("visibilitychange", ()=>{
