@@ -1,452 +1,224 @@
-/* General Body Styling */
-body {
-  color: #EDEDED; /* Light Gray for text */
-  background-color: #2E2A3B; /* Dark Lavender Gray for the main background */
-  font-size: 16px;
-  margin: 0; /* Remove default margin from the body */
-  padding: 0; /* Remove default padding from the body */
-  padding-top: 25px; /* Adjust this value to reduce the spacing */
-  box-sizing: border-box; /* Include padding in the total height */
-}
-h1 {
-  font-weight: bold;
-}
-ol, ul {
-  display: inline-block;
-}
-#metronome-tick {
-  display: none;
-}
-#settings {
-  display: flex; /* Use Flexbox for centering */
-  flex-direction: column; /* Stack form elements vertically */
-  align-items: center; /* Center-align the form elements */
-  justify-content: center; /* Center the form vertically */
-  max-width: 600px; /* Limit the width of the form */
-  width: 100%; /* Ensure the form takes up the full width of its container */
-  margin: 0 auto; /* Center the form horizontally */
-  margin-top: 10px;
-  padding: 30px; /* Add more padding around the form */
-  background-color: #3C374A; /* Soft Gray Lavender for the form background */
-  border: 1px solid #D48ACB; /* Muted Pink for the border */
-  border-radius: 10px; /* Add rounded corners */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
-  box-sizing: border-box; /* Ensure padding is included in the width */
+/* ===============================
+   RESET + BASE
+================================ */
+* {
+  box-sizing: border-box;
 }
 
-/* Ensure the body and html take up the full height of the viewport */
 html, body {
-  height: 100%; /* Make the body and html fill the entire viewport */
-  margin: 0; /* Remove default margin */
-  display: flex;
-  flex-direction: column; /* Stack elements vertically */
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
 
-/* Buttons */
-.btn-primary,
-.btn-primary:focus,
-.btn-primary:active {
-  background-color: #D48ACB !important; /* Muted Pink for buttons */
-  border-color: #D48ACB !important;
-  color: #2E2A3B !important; /* Dark Lavender Gray for text on buttons */
-}
-
-.btn-primary:hover {
-  background-color: #B97AB0 !important; /* Slightly darker shade of muted pink for hover */
-  border-color: #B97AB0 !important;
-}
-
-.btn-secondary {
-  background-color: #3C374A; /* Soft Gray Lavender for secondary buttons */
-  border-color: #3C374A;
-  color: #EDEDED; /* Light Gray for text */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add a shadow for better visibility */
-}
-
-.btn-secondary:hover {
-  background-color: #D48ACB; /* Muted Pink for hover */
-  border-color: #D48ACB;
-}
-
-a, a:hover {
-  color: #d200e6 !important;
-}
-#blueimp-gallery.blueimp-gallery > .play-pause {
-  width: 40px;
-  height: 40px;
-  background-size: 80px 40px;
-}
-#blueimp-gallery.blueimp-gallery-playing > .play-pause {
-  background-position: -40px 0;
-}
-#blueimp-gallery .play-pause {
-  display: none !important;
-}
-.policy {
-  font-size: 75%;
+body {
+  background: #121212;
+  color: #ededed;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, Helvetica, Arial, sans-serif;
+  padding-top: env(safe-area-inset-top);
 }
 
 /* ===============================
-   MANTRA DISPLAY (CENTRADO REAL)
+   CONTENEDOR GENERAL
 ================================ */
-#mantra-display {
-  position: fixed;
-  left: 50%;
-  bottom: 12%;              /* abajo y centrado */
-  transform: translateX(-50%);
-  max-width: 90vw;
-
-  font-size: 2.4em;
-  font-weight: bold;
-  text-align: center;
-
-  color: #ffffff;
-  background: rgba(0,0,0,0.55);
-  padding: 18px 32px;
-  border-radius: 16px;
-
-  pointer-events: none;
-  z-index: 1000000;
-  display: none;
-
-  animation: none;
+.container-fluid {
+  padding: 16px;
 }
 
-@keyframes mantraFade {
-  0%   { opacity: 0; }
-  20%  { opacity: 1; }
-  80%  { opacity: 1; }
-  100% { opacity: 0; }
-}
-
-
-/* Banner Styling */
+/* ===============================
+   BANNER
+================================ */
 #banner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px;
-  background-color: #3C374A; /* Soft Gray Lavender for the banner background */
-  color: #EDEDED; /* Light Gray for text */
-  border-bottom: 2px solid #D48ACB; /* Muted Pink for the border */
-  width: 100%; /* Ensure the banner spans the full width */
-  position: fixed; /* Keep the banner fixed at the top */
-  top: 0; /* Align the banner to the top of the viewport */
-  left: 0; /* Align the banner to the left edge */
-  right: 0; /* Align the banner to the right edge */
-  z-index: 1000; /* Ensure the banner stays above other elements */
-  box-sizing: border-box; /* Include padding and border in the width */
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 
 #banner-left {
   display: flex;
-  align-items: center; /* Align logo and title vertically */
-  gap: 10px; /* Add spacing between the logo and title */
-  flex-shrink: 0; /* Prevent the logo and title from shrinking */
-}
-
-#banner-right {
-  display: flex;
-  gap: 10px; /* Add spacing between buttons */
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 #banner-logo {
-  height: 80px; /* Adjust the logo size */
+  height: 48px;
+  width: auto;
 }
 
 #banner-title {
-  font-size: 2.5em; /* Adjust the title size */
-  font-weight: bold;
-  margin: 0; /* Remove default margin */
-  white-space: nowrap; /* Prevent the title from wrapping to the next line */
+  font-size: 26px;
+  margin: 0;
+  color: #bb86fc;
 }
 
-#banner button {
-  margin-left: 10px; /* Add spacing between buttons */
-  padding: 10px 15px; /* Add padding inside the buttons */
-  background-color: #EBA1F2; /* Logo color for buttons */
-  border: none; /* Remove borders */
-  border-radius: 5px; /* Add rounded corners */
-  color: #333333; /* Dark Gray for text */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
-  cursor: pointer; /* Change cursor to pointer */
+/* ===============================
+   SETTINGS / FORM
+================================ */
+#settings {
+  max-width: 420px;
+  margin: 0 auto;
 }
 
-#banner button:hover {
-  background-color: #D48ACB; /* Slightly darker shade for hover */
+/* Elimina comportamiento desktop innecesario */
+.form-group {
+  margin-bottom: 15px;
 }
 
-/* Main content container */
-.container-fluid {
-  flex: 1; /* Allow the container to grow and fill available space */
-  display: flex; /* Use Flexbox for centering */
-  flex-direction: column; /* Stack content vertically */
-  justify-content: center; /* Center content vertically */
-  align-items: center; /* Center content horizontally */
-  margin-top: 0; /* Remove any additional margin */
-  padding-top: 20px; /* Optional: Add some padding for spacing */
-  padding-bottom: 20px; /* Add space above the footer */
+/* Inputs y textarea */
+input,
+textarea {
+  background: #1e1e1e;
+  color: #ededed;
+  border: 1px solid #333;
 }
 
-/* Instructions Styling */
-#instructions {
-  margin-top: 40px; /* Increase spacing between the instructions and the banner */
-  margin-left: auto;
-  margin-right: auto;
-  text-align: left;
-  max-width: 600px;
-  line-height: 1.8;
-  color: #EDEDED; /* Light Gray for text */
-  font-size: 1.1em;
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: #bb86fc;
+  box-shadow: none;
 }
 
-/* Folder Group Styling */
-#folder-group {
-  display: flex;
-  align-items: center; /* Align items vertically */
-  gap: 20px; /* Add spacing between the Upload Folder */
+/* Tamaño táctil */
+.form-control {
+  height: 44px;
+  font-size: 16px;
 }
 
-/* Ensure the Upload Folder button and file count stack vertically */
-.folder-input-container {
-  display: flex;
-  flex-direction: column; /* Stack the button and file count vertically */
-  gap: 5px; /* Add spacing between the button and file count */
+/* Textarea específico */
+textarea.form-control {
+  height: auto;
+  resize: vertical;
 }
 
-/* Style for the Upload Folder button */
-.folder-input-container .btn-primary {
-  width: 300px; /* Set the desired width for the button */
-  text-align: center; /* Ensure the text is centered */
-}
-
-.file-count-container {
-  margin-top: 5px; /* Add slight spacing above the file count */
-  text-align: left; /* Align the text to the left */
-}
-
-/* Ensure the file count is displayed below the Upload Folder button */
-.file-count-container {
-  margin-top: 10px; /* Add spacing above the file count */
-  text-align: left; /* Align the text to the left */
-  width: 100%; /* Ensure it spans the full width of the container */
+/* ===============================
+   SUBIR CARPETA
+================================ */
+label.btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
 }
 
 #file-count {
-  color: #EDEDED; /* Match the theme color */
-  font-size: 0.9em; /* Slightly smaller font size */
+  display: block;
+  margin-top: 6px;
+  font-size: 14px;
+  color: #aaa;
 }
 
-/* Mantra Group Styling */
-#mantra-group {
-  display: flex;
-  align-items: center; /* Align items in the same row */
-  gap: 20px;
+/* ===============================
+   BOTÓN INICIAR
+================================ */
+#start-button {
   width: 100%;
+  padding: 14px;
+  font-size: 18px;
+  background: #bb86fc;
+  border: none;
+  color: #121212;
 }
 
-.mantra-input-container,
-.voice-select-container {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
+#start-button:active {
+  transform: scale(0.98);
 }
 
-#mantra-group > div {
-  flex: 3;
-  display: flex;
-  flex-direction: column;
-}
-
-#mantra-input {
-  flex: 2; /* Allow the mantra input to take more space */
-}
-
-#voice-select {
-  flex: 1; /* Allow the dropdown to take less space */
-}
-
-#start-button-group {
-  text-align: center;
-}
-
-#banner-logo {
-  height: 80px; /* Adjust the logo size */
-  margin-right: 20px; /* Add spacing between the logo and the title */
-}
-
-#banner-title {
-  font-size: 2.5em; /* Adjust the title size */
-  font-weight: bold;
-  margin: 0; /* Remove default margin */
-}
-
-#banner button {
-  margin-left: 10px; /* Add spacing between buttons */
-  padding: 10px 15px; /* Add padding inside the buttons */
-  background-color: #EBA1F2; /* Logo color for buttons */
-  border: none; /* Remove borders */
-  border-radius: 5px; /* Add rounded corners */
-  color: #333333; /* Dark Gray for text */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
-  cursor: pointer; /* Change cursor to pointer */
-}
-
-#banner button:hover {
-  background-color: #D48ACB; /* Slightly darker shade for hover */
-}
-
-/* Dropdown Menu */
-.dropdown-menu {
-  background-color: #3C374A; /* Soft Gray Lavender for dropdown background */
-  color: #EDEDED; /* Light Gray for text */
-  border: 1px solid #D48ACB; /* Muted Pink for border */
-}
-
-.dropdown-item {
-  color: #D48ACB; /* Match the banner text color */
-}
-
-.dropdown-item:hover {
-  background-color: #D48ACB; /* Muted Pink for hover */
-  color: #2E2A3B; /* Dark Lavender Gray for text */
-}
-
-.modal-dialog {
-  display: flex;
+/* ===============================
+   MANTRA DISPLAY
+================================ */
+#mantra-display {
+  position: fixed;
+  inset: 0;
+  display: none;
   align-items: center;
   justify-content: center;
-  min-height: 100vh; /* Ensure it takes the full height of the viewport */
-  margin: auto; /* Center the modal horizontally */
-  max-width: 500px; /* Optional: Limit the modal width */
+  padding: 20px;
+
+  text-align: center;
+  font-size: 26px;
+  line-height: 1.4;
+  color: #bb86fc;
+
+  pointer-events: none;
+  z-index: 9000;
 }
 
-.modal-content {
-  background-color: #3C374A; /* Soft Gray Lavender for modal background */
-  color: #EDEDED; /* Light Gray for text */
-  border: 2px solid #D48ACB; /* Muted Pink for border */
-  margin: auto; /* Center the modal content */
+/* ===============================
+   MODAL GUÍA / PRIVACIDAD
+================================ */
+#guide-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 10000;
 }
 
-.modal-header {
-  border-bottom: 1px solid #D48ACB; /* Muted Pink for header border */
+#guide-content {
+  background: #1e1e1e;
+  color: #e0e0e0;
+
+  max-width: 900px;
+  height: 90vh;
+  margin: 5vh auto;
+
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+
+  overflow-y: auto;
+  position: relative;
+
+  text-align: left;
 }
 
-.modal-title {
+/* Cerrar modal */
+#close-guide {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 28px;
   font-weight: bold;
+  cursor: pointer;
+  color: #bb86fc;
 }
 
-.modal-body ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.modal-body ul li {
-  margin-bottom: 10px;
-}
-
-.modal-body ul li a {
-  color: #D48ACB; /* Muted Pink for links */
-  text-decoration: none;
-}
-
-.modal-body ul li a:hover {
-  color: #B97AB0; /* Slightly darker shade for hover */
-}
-
-/* Footer */
+/* ===============================
+   FOOTER
+================================ */
 #footer {
-  background-color: #3C374A; /* Soft Gray Lavender for footer background */
-  color: #EDEDED; /* Light Gray for text */
-  padding: 20px 0;
-  border-top: 2px solid #D48ACB; /* Muted Pink for the border */
-  margin-top: auto; /* Push the footer to the bottom of the page */
-  text-align: center; /* Center-align the footer content */
-}
-
-#footer h5 {
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-#footer ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  display: flex; /* Use flexbox to align items in a row */
-  justify-content: center; /* Center the links horizontally */
-  gap: 20px; /* Add spacing between the links */
-}
-
-#footer ul li {
-  margin: 0; /* Remove vertical margin */
-  display: inline; /* Ensure list items are inline */
+  margin-top: 40px;
+  padding-bottom: 40px;
+  font-size: 14px;
 }
 
 #footer a {
-  color: #EBA1F2; /* Logo color for footer links */
-  text-decoration: none;
+  color: #bb86fc;
 }
 
-#footer a:hover {
-  color: #D48ACB; /* Slightly darker shade of the logo color for hover */
+/* ===============================
+   BLUEIMP GALLERY
+================================ */
+.blueimp-gallery {
+  background: #000;
 }
 
-/* Center the instructions block horizontally while keeping the text left-aligned */
-#instructions {
-  margin-top: 40px; /* Increase spacing between the instructions and the banner */
-  margin-left: auto;
-  margin-right: auto;
-  text-align: left;
-  max-width: 600px;
-  line-height: 1.8;
-  color: #EDEDED; /* Light Gray for text */
-  font-size: 1.1em;
-}
+/* ===============================
+   DESKTOP MEJORAS
+================================ */
+@media (min-width: 768px) {
 
-/* Form Inputs */
-.form-control {
-  background-color: #3C374A; /* Soft Gray Lavender for input backgrounds */
-  color: #EDEDED; /* Light Gray for text */
-  border: 1px solid #D48ACB; /* Muted Pink for input borders */
-  padding: 10px 15px; /* Add padding inside the input fields */
-  border-radius: 5px; /* Add rounded corners */
-  width: calc(100% - 10px); /* Ensure inputs take up the full width minus padding */
-  box-sizing: border-box; /* Ensure padding doesn't affect width */
-}
+  #banner-title {
+    font-size: 32px;
+  }
 
-/* Fix alignment for file input and dropdown */
-#folder-input,
-#voice-select {
-  height: auto; /* Ensure proper height for these elements */
-  padding: 10px; /* Add padding for consistency */
-  vertical-align: middle; /* Align them properly within their containers */
-}
+  #settings {
+    max-width: 520px;
+  }
 
-/* Focus state for input fields */
-.form-control:focus {
-  background-color: #2E2A3B; /* Dark Lavender Gray for focus state */
-  border-color: #D48ACB; /* Muted Pink for focus border */
-  color: #EDEDED;
-}
-
-/* Left-align labels */
-.form-group label {
-  text-align: left !important; /* Force labels to align to the left */
-  display: block; /* Ensure labels are on their own line */
-  margin-bottom: 5px; /* Add spacing below the label */
-  color: #EDEDED; /* Light Gray for text */
-  font-weight: bold; /* Make labels bold for better readability */
-  width: 100%; /* Ensure labels take up the full width of the form group */
-}
-
-/* Adjust form group spacing */
-.form-group {
-  width: 100%; /* Make form groups take up the full width */
-  margin-bottom: 20px; /* Add spacing between form groups */
-  display: flex; /* Use Flexbox for alignment */
-  align-items: center; /* Align items vertically */
-  gap: 20px; /* Add spacing between elements */
-  padding-left: 10px; /* Add padding to the left for spacing */
-  box-sizing: border-box; /* Ensure padding doesn't affect width */
+  #mantra-display {
+    font-size: 36px;
+  }
 }
