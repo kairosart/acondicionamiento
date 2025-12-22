@@ -30,48 +30,27 @@
   </div>
 
   <!-- FORMULARIO AJUSTES -->
-  <div id="settings"> 
-    <form class="form-horizontal" autocomplete="off"> 
-      <div id="folder-group" class="form-group"> 
-        <div class="folder-input-container"> 
-          <label class="btn btn-primary" for="folder-input">Upload Folder</label> 
-          <input type="file" id="folder-input" webkitdirectory directory multiple class="form-control" style="display: none;"> 
-        </div> 
-        <div class="file-count-container"> 
-          <span id="file-count" style="color: #EDEDED; font-size: 0.9em;">0 file(s) uploaded</span> 
-        </div> 
-      </div> 
+  <div id="settings">
+    <form autocomplete="off">
+      <!-- Subir carpeta -->
+      <label class="btn btn-primary" for="folder-input">Subir carpeta</label>
+      <input type="file" id="folder-input" webkitdirectory multiple>
+      <span id="file-count">0 archivos cargados</span>
 
-      <div id="beats-group" class="form-group"> 
-        <label class="control-label" for="beats-input">BPM:</label> 
-        <input class="form-control" id="beats-input" type="number"> 
-      </div> 
+      <!-- BPM -->
+      <input class="form-control" id="beats-input" type="number" placeholder="BPM">
 
-      <div id="next-group" class="form-group"> 
-        <label class="control-label" for="next-input">Beats per image:</label> 
-        <input class="form-control" id="next-input" type="number"> 
-      </div> 
+      <!-- Golpes por imagen -->
+      <input class="form-control" id="next-input" type="number" placeholder="Golpes por imagen">
 
-      <div id="mantra-group" class="form-group"> 
-        <div class="mantra-input-container"> 
-          <label class="control-label" for="mantra-input">Mantra:</label> 
-          <input class="form-control" id="mantra-input" type="text" placeholder="Enter your mantra"> 
-        </div> 
-        <div class="voice-select-container"> 
-          <label class="control-label" for="voice-select">Voice:</label> 
-          <select class="form-control" id="voice-select"> 
-            <option value="">Loading voices...</option> 
-          </select> 
-        </div> 
-      </div> 
+      <!-- Mantra -->
+      <textarea class="form-control" id="mantra-input" rows="3" placeholder="Escribe tu mantra"></textarea>
 
-      <div id="start-button-group" class="form-group"> 
-        <button id="start-button" type="button" class="btn btn-primary">Start</button> 
-      </div> 
-    </form> 
-  </div> 
-</div> 
-
+      <!-- Iniciar -->
+      <button id="start-button" type="button" class="btn btn-primary">Iniciar</button>
+    </form>
+  </div>
+</div>
 
 <!-- MANTRA DISPLAY -->
 <div id="mantra-display"></div>
