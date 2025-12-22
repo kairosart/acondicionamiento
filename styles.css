@@ -25,6 +25,7 @@ ol, ul {
   max-width: 600px; /* Limit the width of the form */
   width: 100%; /* Ensure the form takes up the full width of its container */
   margin: 0 auto; /* Center the form horizontally */
+  margin-top: 10px;
   padding: 30px; /* Add more padding around the form */
   background-color: #3C374A; /* Soft Gray Lavender for the form background */
   border: 1px solid #D48ACB; /* Muted Pink for the border */
