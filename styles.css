@@ -1,257 +1,37 @@
-/* ===============================
-   RESET + BASE
-================================ */
-* {
-  box-sizing: border-box;
-}
-
+/* BASE */
 html, body {
   margin: 0;
   padding: 0;
-  height: 100%;
-}
-
-body {
   background: #121212;
   color: #ededed;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-               Roboto, Helvetica, Arial, sans-serif;
-  padding-top: env(safe-area-inset-top);
+  font-family: system-ui, Roboto, Arial, sans-serif;
 }
 
-/* ===============================
-   CONTENEDOR GENERAL
-================================ */
-.container-fluid {
-  padding: 16px;
-}
-
-/* ===============================
-   BANNER
-================================ */
-#banner {
-  margin-top: 10px;
-  margin-bottom: 20px;
-}
-
-#banner-left {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-#banner-logo {
-  height: 48px;
-  width: auto;
-}
-
-#banner-title {
-  font-size: 26px;
-  margin: 0;
-  color: #bb86fc;
-}
-
-/* ===============================
-   SETTINGS / FORM
-================================ */
-#settings {
-  max-width: 420px;
-  margin: 0 auto;
-}
-
-/* Elimina comportamiento desktop innecesario */
-.form-group {
-  margin-bottom: 15px;
-}
-
-/* Inputs y textarea */
-input,
-textarea {
-  background: #1e1e1e;
-  color: #ededed;
-  border: 1px solid #333;
-}
-
-input:focus,
-textarea:focus {
-  outline: none;
-  border-color: #bb86fc;
-  box-shadow: none;
-}
-
-/* Tamaño táctil */
-.form-control {
-  height: 44px;
-  font-size: 16px;
-}
-
-/* Textarea específico */
-textarea.form-control {
-  height: auto;
-  resize: vertical;
-}
-
-/* ===============================
-   SUBIR CARPETA
-================================ */
-label.btn {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-}
-
-#file-count {
-  display: block;
-  margin-top: 6px;
-  font-size: 14px;
-  color: #aaa;
-}
-
-/* ===============================
-   BOTÓN INICIAR
-================================ */
-#start-button {
-  width: 100%;
-  padding: 14px;
-  font-size: 18px;
-  background: #bb86fc;
-  border: none;
-  color: #121212;
-}
-
-#start-button:active {
-  transform: scale(0.98);
-}
-
-/* ===============================
-   MANTRA DISPLAY
-================================ */
+/* MANTRA DISPLAY */
 #mantra-display {
   position: fixed;
-  inset: 0;
+  left: 50%;
+  bottom: 20%;
+  transform: translateX(-50%);
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  max-width: 90vw;
+  padding: 16px 24px;
 
-  padding: 20px;
+  font-size: 1.6em;
+  font-weight: bold;
   text-align: center;
 
-  font-size: 26px;
-  line-height: 1.4;
-  color: #bb86fc;
-
-  background: rgba(0,0,0,0.0);
-  pointer-events: none;
-
-  opacity: 0;
-  z-index: 9000;
-}
-
-/* ===============================
-   MODAL GUÍA / PRIVACIDAD
-================================ */
-#guide-modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.85);
-  z-index: 10000;
-}
-
-#guide-content {
-  background: #1e1e1e;
-  color: #e0e0e0;
-
-  max-width: 900px;
-  height: 90vh;
-  margin: 5vh auto;
-
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.6);
-
-  overflow-y: auto;
-  position: relative;
-
-  text-align: left;
-}
-
-/* Cerrar modal */
-#close-guide {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-  color: #bb86fc;
-}
-
-/* ===============================
-   FOOTER
-================================ */
-#footer {
-  margin-top: 40px;
-  padding-bottom: 40px;
-  font-size: 14px;
-}
-
-#footer a {
-  color: #bb86fc;
-}
-
-/* ===============================
-   BLUEIMP GALLERY
-================================ */
-.blueimp-gallery {
-  background: #000;
-}
-
-/* ===============================
-   DESKTOP MEJORAS
-================================ */
-@media (min-width: 768px) {
-
-  #banner-title {
-    font-size: 32px;
-  }
-
-  #settings {
-    max-width: 520px;
-  }
-
-  #mantra-display {
-    font-size: 36px;
-  }
-}
-
-#mantra-display {
-  position: fixed !important;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-
-  display: none;
-  align-items: center;
-  justify-content: center;
-
-  padding: 20px;
-  text-align: center;
-
-  font-size: 28px;
-  font-weight: bold;
   color: #ffffff;
+  background: rgba(0,0,0,0.65);
+  border-radius: 16px;
 
-  background: rgba(0,0,0,0.35);
-
-  z-index: 999999 !important;
   pointer-events: none;
+  z-index: 2147483647;
+
+  display: none;
 }
 
+/* FADE SUAVE */
 @keyframes mantraFadeSoft {
   0%   { opacity: 0; }
   20%  { opacity: 1; }
@@ -259,4 +39,10 @@ label.btn {
   100% { opacity: 0; }
 }
 
-
+/* MÓVIL */
+@media (max-width: 768px) {
+  #mantra-display {
+    font-size: 1.3em;
+    bottom: 22%;
+  }
+}
