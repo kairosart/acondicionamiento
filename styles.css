@@ -228,10 +228,35 @@ label.btn {
   }
 }
 
+#mantra-display {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+  text-align: center;
+
+  font-size: 28px;
+  font-weight: bold;
+  color: #ffffff;
+
+  background: rgba(0,0,0,0.35);
+
+  z-index: 999999 !important;
+  pointer-events: none;
+}
+
 @keyframes mantraFadeSoft {
   0%   { opacity: 0; }
   20%  { opacity: 1; }
   80%  { opacity: 1; }
   100% { opacity: 0; }
 }
+
 
