@@ -7,18 +7,6 @@ html, body {
   font-family: system-ui, Roboto, Arial, sans-serif;
 }
 
-/* LOGO */
-#banner-logo {
-  height: 40px;       /* más pequeño que antes */
-  width: auto;        /* mantiene proporción */
-}
-
-/* Móvil */
-@media (max-width: 768px) {
-  #banner-logo {
-    height: 32px;     /* aún más pequeño en pantallas pequeñas */
-  }
-}
 
 
 /* MANTRA DISPLAY */
