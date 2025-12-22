@@ -24,12 +24,21 @@ document.getElementById("folder-input").addEventListener("change", e => {
 function showMantra(text, durationMs) {
   const el = document.getElementById("mantra-display");
   if (!el) return;
-  el.style.display = "block";
+
   el.textContent = text;
+  el.style.display = "flex";
+  el.style.opacity = "1";
+
   el.style.animation = "none";
   void el.offsetHeight;
+
   el.style.animation = `mantraFadeSoft ${durationMs}ms ease-in-out`;
+
+  setTimeout(() => {
+    el.style.opacity = "0";
+  }, durationMs);
 }
+
 
 // Parar sesión
 function stopSession() {

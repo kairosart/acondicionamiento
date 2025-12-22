@@ -131,17 +131,22 @@ label.btn {
 #mantra-display {
   position: fixed;
   inset: 0;
-  display: none;
+
+  display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
 
+  padding: 20px;
   text-align: center;
+
   font-size: 26px;
   line-height: 1.4;
   color: #bb86fc;
 
+  background: rgba(0,0,0,0.0);
   pointer-events: none;
+
+  opacity: 0;
   z-index: 9000;
 }
 
@@ -222,3 +227,11 @@ label.btn {
     font-size: 36px;
   }
 }
+
+@keyframes mantraFadeSoft {
+  0%   { opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
