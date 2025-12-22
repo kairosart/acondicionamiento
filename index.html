@@ -30,9 +30,21 @@
 
   <div id="settings">
     <form autocomplete="off">
-      <label class="btn btn-primary" for="folder-input">Subir carpeta</label>
-      <input type="file" id="folder-input" webkitdirectory multiple>
+
+      <label for="folder-input" class="btn btn-primary">
+        📁 Subir carpeta
+      </label>
+
+      <input
+        type="file"
+        id="folder-input"
+        webkitdirectory
+        multiple
+        style="display:none;"
+      >
+
       <span id="file-count">0 archivos cargados</span>
+     
 
       <input id="beats-input" class="form-control" type="number" placeholder="BPM">
       <input id="next-input" class="form-control" type="number" placeholder="Golpes por imagen">
