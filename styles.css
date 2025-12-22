@@ -46,3 +46,13 @@ html, body {
     bottom: 22%;
   }
 }
+
+#folder-input {
+  display: none !important;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
