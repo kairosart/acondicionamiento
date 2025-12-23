@@ -39,13 +39,13 @@
 
       <!-- BPM -->
       <div class="form-group">
-        <label for="beats-input">BPM:</label>
+        <label for="beats-input">BPM</label>
         <input class="form-control" id="beats-input" type="number">
       </div>
 
       <!-- NEXT -->
       <div class="form-group">
-        <label for="next-input">Golpes por imagen:</label>
+        <label for="next-input">Golpes por imagen</label>
         <input class="form-control" id="next-input" type="number">
       </div>
 
@@ -53,8 +53,16 @@
       <textarea class="form-control" id="mantra-input" rows="3" placeholder="Escribe tu mantra"></textarea>
       <br>
 
-      <!-- Iniciar -->
-      <button id="start-button" type="button" class="btn btn-primary">Iniciar</button>
+
+      <!-- START -->
+      <div class="form-group d-flex justify-content-center">
+        <button
+        id="start-button"
+        type="button"
+        class="btn btn-primary btn-lg"
+        onclick="start()">
+        Iniciar
+      </button>
     </form>
   </div>
 </div>

@@ -41,7 +41,7 @@ label.btn { width:100%; padding:12px; font-size:16px; }
 
 /* BOTÓN INICIAR */
 #start-button { width:100%; padding:14px; font-size:18px; background:#bb86fc; border:none; color:#121212; }
-#start-button:active { transform:scale(0.98); }
+#start-button:active { transform:scale(0.98); }*/
 
 /* MANTRA DISPLAY */
 #mantra-display {
