@@ -28,6 +28,12 @@ input:focus, textarea:focus { outline:none; border-color:#bb86fc; box-shadow:non
   width: 100%;
 }
 
+.form-control:focus {
+  background-color: #2E2A3B;
+  border-color: #D48ACB;
+  color: #EDEDED;
+}
+
 textarea.form-control { height:auto; resize:vertical; }
 label.btn { width:100%; padding:12px; font-size:16px; }
 
