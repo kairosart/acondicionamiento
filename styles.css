@@ -39,9 +39,26 @@ label.btn { width:100%; padding:12px; font-size:16px; }
 
 #file-count { display:block; margin-top:6px; font-size:14px; color:#aaa; }
 
-/* BOTÓN INICIAR */
-#start-button { width:100%; padding:14px; font-size:18px; background:#bb86fc; border:none; color:#121212; }
-#start-button:active { transform:scale(0.98); }*/
+
+/* ===============================
+   BOTONES
+================================ */
+.btn-primary,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: #D48ACB !important;
+  border-color: #D48ACB !important;
+  color: #2E2A3B !important;
+}
+
+.btn-primary:hover {
+  background-color: #B97AB0 !important;
+  border-color: #B97AB0 !important;
+}
+
+
+
+
 
 /* MANTRA DISPLAY */
 #mantra-display {
