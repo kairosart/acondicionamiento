@@ -56,7 +56,6 @@ function stopSession() {
   const el = document.getElementById("mantra-display");
   el.style.display="none";
   el.textContent="";
-  hideSpinner();
 }
 
 // Iniciar sesión
@@ -72,20 +71,10 @@ document.getElementById("start-button").addEventListener("click", ()=>{
   app.beatCount = 0;
 
   if(app.mantra){
-    showSpinner();
-
-    app.mantraSound = new Howl({
-    src: ["assets/mantra/mantra1.mp3"],
-    volume: 0.15,
-    html5: true,
-    preload: true,
-      onload: () => {
-        hideSpinner();
-      },
-      onloaderror: () => {
-        hideSpinner();
-        alert("Error al cargar el mantra");
-      }
+    app.mantraSound = new Howl({ 
+      src:["assets/mantra/mantra1.mp3"], 
+      volume:0.15, 
+      html5:true 
     });
   }
 
