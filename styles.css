@@ -152,6 +152,10 @@ label.btn {
   100% { opacity: 0; }
 }
 
+
+
+
+
 /* ======================================================
    MODAL GUÍA / PRIVACIDAD
 ====================================================== */
@@ -288,4 +292,40 @@ label.btn {
   #mantra-display {
     font-size: 36px;
   }
+}
+
+/* ===============================
+   SPINNER MANTRA
+================================ */
+#mantra-spinner {
+  position: fixed;
+  inset: 0;
+  display: none;
+
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(0,0,0,0.6);
+  z-index: 20000;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(255,255,255,0.2);
+  border-top-color: #bb86fc;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.spinner-text {
+  margin-top: 15px;
+  color: #bb86fc;
+  font-size: 16px;
+  text-align: center;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

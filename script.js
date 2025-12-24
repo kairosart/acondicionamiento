@@ -10,6 +10,17 @@ const app = {
   mantraSound: null
 };
 
+function showSpinner() {
+  const s = document.getElementById("mantra-spinner");
+  if (s) s.style.display = "flex";
+}
+
+function hideSpinner() {
+  const s = document.getElementById("mantra-spinner");
+  if (s) s.style.display = "none";
+}
+
+
 // Subir imágenes
 document.getElementById("folder-input").addEventListener("change", e => {
   app.urls = Array.from(e.target.files)
@@ -45,6 +56,7 @@ function stopSession() {
   const el = document.getElementById("mantra-display");
   el.style.display="none";
   el.textContent="";
+  hideSpinner();
 }
 
 // Iniciar sesión
@@ -60,7 +72,21 @@ document.getElementById("start-button").addEventListener("click", ()=>{
   app.beatCount = 0;
 
   if(app.mantra){
-    app.mantraSound = new Howl({ src:["assets/mantra/mantra1.mp3"], volume:0.15, html5:true });
+    showSpinner();
+
+    app.mantraSound = new Howl({
+    src: ["assets/mantra/mantra1.mp3"],
+    volume: 0.15,
+    html5: true,
+    preload: true,
+      onload: () => {
+        hideSpinner();
+      },
+      onloaderror: () => {
+        hideSpinner();
+        alert("Error al cargar el mantra");
+      }
+    });
   }
 
   app.gallery = blueimp.Gallery(app.urls, { onclose: ()=>{ stopSession(); app.gallery=null; } });
