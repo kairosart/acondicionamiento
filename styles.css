@@ -261,12 +261,19 @@ label.btn {
 }
 
 /* ======================================================
-   🔹 WEB MODE — DESKTOP
+   WEB MODE — DESKTOP (NO FULL WIDTH)
 ====================================================== */
 @media (min-width: 769px) {
 
+  body {
+    display: flex;
+    justify-content: center;
+  }
+
   .container-fluid {
-    padding: 40px;
+    max-width: 900px;   /* 👈 ancho tipo app web */
+    width: 100%;
+    padding: 40px 30px;
   }
 
   #settings {
