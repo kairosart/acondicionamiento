@@ -1,105 +1,284 @@
-/* RESET */
-* { box-sizing: border-box; }
-html, body { margin:0; padding:0; height:100%; }
-body { background:#121212; color:#ededed; font-family:Roboto,Arial,sans-serif; padding-top:env(safe-area-inset-top); }
-
-/* CONTENEDOR */
-.container-fluid { padding:16px; }
-
-/* BANNER */
-#banner { margin-top:10px; margin-bottom:20px; }
-#banner-logo { height:40px; width:auto; }
-#banner-title { font-size:26px; margin:0; color:#bb86fc; }
-
-/* SETTINGS FORM */
-#settings {
-  max-width: none;     /* ❗ quita el límite */
-  width: 100%;
-  margin: 0;
+/* ======================================================
+   RESET + BASE
+====================================================== */
+* {
+  box-sizing: border-box;
 }
 
-.form-group { margin-bottom:15px; }
-input, textarea { background:#1e1e1e; color:#ededed; border:1px solid #333; }
-input:focus, textarea:focus { outline:none; border-color:#bb86fc; box-shadow:none; }
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
 
-/*.form-control { height:44px; font-size:16px; }*/
+body {
+  background: #121212;
+  color: #ededed;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+}
 
+/* ======================================================
+   CONTENEDOR GENERAL
+====================================================== */
+.container-fluid {
+  padding: 16px;
+}
+
+/* ======================================================
+   BANNER
+====================================================== */
+#banner {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#banner-logo {
+  height: 42px;          /* 👈 logo más pequeño */
+  width: auto;
+  margin-bottom: 8px;
+}
+
+#banner-title {
+  font-size: 26px;
+  margin: 0;
+  color: #bb86fc;
+}
+
+/* ======================================================
+   SETTINGS / FORM
+====================================================== */
+#settings {
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+#settings form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Inputs */
 .form-control {
-  background-color: #3C374A;
-  color: #EDEDED;
-  border: 1px solid #D48ACB;
-  padding: 10px 15px;
-  border-radius: 5px;
-  width: 100%;
+  height: 44px;
+  font-size: 16px;
+  background: #1e1e1e;
+  color: #ededed;
+  border: 1px solid #333;
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 90px;
+  resize: vertical;
 }
 
 .form-control:focus {
-  background-color: #2E2A3B;
-  border-color: #D48ACB;
-  color: #EDEDED;
+  border-color: #bb86fc;
+  box-shadow: none;
+  outline: none;
 }
 
-textarea.form-control { height:auto; resize:vertical; }
-label.btn { width:100%; padding:12px; font-size:16px; }
-
-#file-count { display:block; margin-top:6px; font-size:14px; color:#aaa; }
-
-
-/* ===============================
-   BOTONES
-================================ */
-.btn-primary,
-.btn-primary:focus,
-.btn-primary:active {
-  background-color: #D48ACB !important;
-  border-color: #D48ACB !important;
-  color: #2E2A3B !important;
-}
-
-.btn-primary:hover {
-  background-color: #B97AB0 !important;
-  border-color: #B97AB0 !important;
-}
-
-
-
-
-
-/* MANTRA DISPLAY */
-#mantra-display {
-  position:fixed; left:50%; bottom:15%; transform:translateX(-50%);
-  max-width:90vw; padding:18px 28px;
-  font-size:2em; font-weight:bold; text-align:center;
-  color:#ffffff; background:rgba(0,0,0,0.6); border-radius:16px;
-  z-index:2147483647; pointer-events:none; opacity:0;
-}
-@keyframes mantraFadeSoft {
-  0%,100% { opacity:0; }
-  20%,80% { opacity:1; }
-}
-
-/* MODAL */
-#guide-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:10000; }
-#guide-content {
-  background:#1e1e1e; color:#e0e0e0; max-width:900px; height:90vh; margin:5vh auto; padding:30px;
-  border-radius:12px; box-shadow:0 8px 25px rgba(0,0,0,0.6); overflow-y:auto; position:relative; text-align:left;
-}
-#close-guide { position:absolute; top:15px; right:20px; font-size:28px; font-weight:bold; cursor:pointer; color:#bb86fc; }
-
-/* FOOTER */
-#footer { margin-top:40px; padding-bottom:40px; font-size:14px; }
-#footer a { color:#bb86fc; }
-
-/* BLUEIMP GALLERY */
-.blueimp-gallery { background:#000; }
-
-/* RESPONSIVE */
-@media (max-width:768px) {
-  #banner-title { font-size:20px; }
-  #mantra-display { font-size:1.4em; bottom:20%; padding:14px 20px; }
-  #settings { max-width:95%; }
+/* ======================================================
+   SUBIR CARPETA (SIN BROWSE)
+====================================================== */
+label.btn {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
 }
 
 #folder-input {
-  display: none; /* oculta el input nativo */
+  display: none; /* ❌ elimina browse */
+}
+
+#file-count {
+  display: block;
+  text-align: center;
+  font-size: 14px;
+  color: #aaa;
+}
+
+/* ======================================================
+   BOTÓN INICIAR
+====================================================== */
+#start-button {
+  width: 100%;
+  padding: 16px;
+  font-size: 18px;
+  font-weight: bold;
+  background: #bb86fc;
+  border: none;
+  color: #121212;
+  border-radius: 12px;
+}
+
+#start-button:active {
+  transform: scale(0.98);
+}
+
+/* ======================================================
+   MANTRA DISPLAY (SIEMPRE VISIBLE)
+====================================================== */
+#mantra-display {
+  position: fixed;
+  left: 50%;
+  bottom: 18%;
+  transform: translateX(-50%);
+
+  max-width: 90vw;
+  padding: 18px 28px;
+
+  font-size: 2em;
+  font-weight: bold;
+  text-align: center;
+
+  color: #ffffff;
+  background: rgba(0,0,0,0.6);
+  border-radius: 16px;
+
+  z-index: 2147483647; /* sobre Blueimp */
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* Animación mantra */
+@keyframes mantraFadeSoft {
+  0%   { opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ======================================================
+   MODAL GUÍA / PRIVACIDAD
+====================================================== */
+#guide-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 10000;
+}
+
+#guide-content {
+  background: #1e1e1e;
+  color: #e0e0e0;
+
+  max-width: 900px;
+  height: 90vh;
+  margin: 5vh auto;
+
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+
+  overflow-y: auto;
+  position: relative;
+  text-align: left;
+}
+
+#close-guide {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #bb86fc;
+}
+
+/* ======================================================
+   FOOTER
+====================================================== */
+#footer {
+  margin-top: 40px;
+  padding-bottom: 40px;
+  font-size: 14px;
+  text-align: center;
+}
+
+#footer a {
+  color: #bb86fc;
+  text-decoration: underline;
+}
+
+/* ======================================================
+   BLUEIMP GALLERY
+====================================================== */
+.blueimp-gallery {
+  background: #000;
+}
+
+/* ======================================================
+   🔹 APP MODE — MÓVIL
+====================================================== */
+@media (max-width: 768px) {
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  .container-fluid {
+    padding: 10px;
+  }
+
+  #settings {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+  }
+
+  .form-control {
+    height: 48px;
+    font-size: 16px;
+  }
+
+  textarea.form-control {
+    min-height: 100px;
+  }
+
+  button,
+  .btn {
+    width: 100%;
+    padding: 16px;
+    font-size: 18px;
+    border-radius: 14px;
+  }
+
+  #banner-title {
+    font-size: 22px;
+  }
+
+  #mantra-display {
+    font-size: 1.4em;
+    bottom: 22%;
+    padding: 14px 20px;
+  }
+}
+
+/* ======================================================
+   🔹 WEB MODE — DESKTOP
+====================================================== */
+@media (min-width: 769px) {
+
+  .container-fluid {
+    padding: 40px;
+  }
+
+  #settings {
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  #banner-title {
+    font-size: 32px;
+  }
+
+  #mantra-display {
+    font-size: 36px;
+  }
 }
