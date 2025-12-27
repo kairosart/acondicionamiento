@@ -82,14 +82,39 @@ textarea.form-control {
 }
 
 /* ======================================================
-   SUBIR CARPETA (SIN BROWSE)
+   BOTONES PRINCIPALES (clase compartida)
+   Usar .btn-primary en <button> y en <label> (o mantener label.btn)
 ====================================================== */
+.btn-primary,
 label.btn {
   width: 100%;
-  padding: 14px;
-  font-size: 16px;
+  padding: 16px;
+  font-size: 18px;
+  font-weight: bold;
+  background: #bb86fc;
+  border: none;
+  color: #121212;
+  border-radius: 12px;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
+.btn-primary:active,
+label.btn:active {
+  transform: scale(0.98);
+}
+
+/* Mantener compatibilidad con #start-button si se usa en scripts */
+#start-button {
+  /* Mantener id para selectores JS; estilos aplicados por .btn-primary */
+}
+
+/* ======================================================
+   SUBIR CARPETA (SIN BROWSE)
+====================================================== */
 #folder-input {
   display: none; /* ❌ elimina browse */
 }
@@ -99,24 +124,6 @@ label.btn {
   text-align: center;
   font-size: 14px;
   color: #aaa;
-}
-
-/* ======================================================
-   BOTÓN INICIAR
-====================================================== */
-#start-button {
-  width: 100%;
-  padding: 16px;
-  font-size: 18px;
-  font-weight: bold;
-  background: #bb86fc;
-  border: none;
-  color: #121212;
-  border-radius: 12px;
-}
-
-#start-button:active {
-  transform: scale(0.98);
 }
 
 /* ======================================================
@@ -245,8 +252,11 @@ label.btn {
     min-height: 100px;
   }
 
+  /* incluir .btn-primary en responsive */
   button,
-  .btn {
+  .btn,
+  .btn-primary,
+  label.btn {
     width: 100%;
     padding: 16px;
     font-size: 18px;
@@ -286,4 +296,3 @@ label.btn {
     font-size: 36px;
   }
 }
-
