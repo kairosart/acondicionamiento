@@ -84,50 +84,78 @@ textarea.form-control {
 /* ======================================================
    BOTONES PRINCIPALES (clase compartida)
    Usar .btn-primary en <button> y en <label> (o mantener label.btn)
-   OVERRIDES FUERTES PARA MÓVIL: forzar violeta en hover/active/focus
+   OVERRIDES MUY FUERTES para evitar el efecto azul nativo
 ====================================================== */
 
-/* Asegurar comportamiento consistente en múltiples engines / móviles */
+/* Incluir también inputs tipo botón/submit/reset y anclas si se usan */
 button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
 label.btn,
 .btn,
 .btn-primary {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+  tap-highlight-color: rgba(0,0,0,0) !important;
   touch-action: manipulation;
   -webkit-user-select: none;
   user-select: none;
-  background-image: none;
+  background-image: none !important;
+  border: none !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
 }
 
-/* Estilo base */
+/* Estilo base del botón */
 .btn-primary,
 label.btn {
   width: 100%;
   padding: 16px;
   font-size: 18px;
   font-weight: bold;
-  background-color: #bb86fc;
-  background-image: none;
-  border: none;
-  color: #121212;
+  background-color: #bb86fc !important;
+  background-image: none !important;
+  border: none !important;
+  color: #121212 !important;
   border-radius: 12px;
   display: inline-block;
   text-align: center;
   cursor: pointer;
   user-select: none;
   transition: background 150ms ease, transform 60ms ease;
+  -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
 }
 
-/* Pequeña animación al pulsar */
+/* Pulsación (efecto de presionar) */
 .btn-primary:active,
-label.btn:active {
+label.btn:active,
+button:active,
+input[type="button"]:active,
+input[type="submit"]:active,
+input[type="reset"]:active,
+.btn:active {
   transform: scale(0.98);
 }
 
-/* Forzar violeta también en focus / active (móviles a veces muestran highlight azul) */
+/* Forzar violeta en todos los estados interactivos */
+.btn-primary:hover,
+label.btn:hover,
+button:hover,
+.btn:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover {
+  background-color: #9a6dfc !important;
+  background-image: none !important;
+  color: #121212 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Forzar violeta en focus / active / focus-visible (móviles y desktop) */
 .btn-primary:focus,
 .btn-primary:focus-visible,
 .btn-primary:active,
@@ -137,6 +165,12 @@ label.btn:active,
 button:focus,
 button:focus-visible,
 button:active,
+input[type="button"]:focus,
+input[type="submit"]:focus,
+input[type="reset"]:focus,
+input[type="button"]:active,
+input[type="submit"]:active,
+input[type="reset"]:active,
 .btn:focus,
 .btn:focus-visible,
 .btn:active {
@@ -146,16 +180,21 @@ button:active,
   outline: none !important;
   box-shadow: none !important;
   -webkit-box-shadow: none !important;
+  border-color: transparent !important;
 }
 
-/* Hover: cambiar a violeta al pasar el ratón (desktop) */
-.btn-primary:hover,
-label.btn:hover,
-button:hover,
-.btn:hover {
-  background-color: #9a6dfc;
-  background-image: none;
-  color: #121212;
+/* Reset pseudo-elementos que algunos UAs pintan */
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+/* Algunos engines cerca de WebKit podrían pintar un ring; ocultarlo */
+button:focus,
+input:focus,
+label:focus {
+  outline: none !important;
 }
 
 /* Mantener compatibilidad con #start-button si se usa en scripts */
