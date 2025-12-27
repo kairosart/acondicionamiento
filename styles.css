@@ -84,26 +84,33 @@ textarea.form-control {
 /* ======================================================
    BOTONES PRINCIPALES (clase compartida)
    Usar .btn-primary en <button> y en <label> (o mantener label.btn)
+   OVERRIDES FUERTES PARA MÓVIL: forzar violeta en hover/active/focus
 ====================================================== */
 
-/* Asegurar comportamiento consistente en móviles */
+/* Asegurar comportamiento consistente en múltiples engines / móviles */
 button,
 label.btn,
 .btn,
 .btn-primary {
   -webkit-appearance: none;
+  -moz-appearance: none;
   appearance: none;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+  background-image: none;
 }
 
+/* Estilo base */
 .btn-primary,
 label.btn {
   width: 100%;
   padding: 16px;
   font-size: 18px;
   font-weight: bold;
-  background: #bb86fc;
+  background-color: #bb86fc;
+  background-image: none;
   border: none;
   color: #121212;
   border-radius: 12px;
@@ -111,10 +118,10 @@ label.btn {
   text-align: center;
   cursor: pointer;
   user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  transition: background 150ms ease, transform 60ms ease; /* transición suave */
+  transition: background 150ms ease, transform 60ms ease;
 }
 
+/* Pequeña animación al pulsar */
 .btn-primary:active,
 label.btn:active {
   transform: scale(0.98);
@@ -122,25 +129,32 @@ label.btn:active {
 
 /* Forzar violeta también en focus / active (móviles a veces muestran highlight azul) */
 .btn-primary:focus,
-label.btn:focus,
-button:focus,
-.btn:focus,
+.btn-primary:focus-visible,
 .btn-primary:active,
+label.btn:focus,
+label.btn:focus-visible,
 label.btn:active,
+button:focus,
+button:focus-visible,
 button:active,
+.btn:focus,
+.btn:focus-visible,
 .btn:active {
-  background: #9a6dfc; /* violeta más oscuro */
-  color: #121212;
-  outline: none;
-  box-shadow: none;
+  background-color: #9a6dfc !important;
+  background-image: none !important;
+  color: #121212 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
 }
 
-/* Hover: cambiar a violeta al pasar el ratón */
+/* Hover: cambiar a violeta al pasar el ratón (desktop) */
 .btn-primary:hover,
 label.btn:hover,
 button:hover,
 .btn:hover {
-  background: #9a6dfc; /* violeta más oscuro */
+  background-color: #9a6dfc;
+  background-image: none;
   color: #121212;
 }
 
