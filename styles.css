@@ -100,11 +100,21 @@ label.btn {
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  transition: background 150ms ease, transform 60ms ease; /* transición suave */
 }
 
 .btn-primary:active,
 label.btn:active {
   transform: scale(0.98);
+}
+
+/* Hover: cambiar a violeta al pasar el ratón */
+.btn-primary:hover,
+label.btn:hover,
+button:hover,
+.btn:hover {
+  background: #9a6dfc; /* violeta más oscuro */
+  color: #121212;
 }
 
 /* Mantener compatibilidad con #start-button si se usa en scripts */
