@@ -29,12 +29,16 @@
     <h1 id="banner-title">Sissymax</h1>
   </div>
 
+
   <!-- FORMULARIO AJUSTES -->
   <div id="settings">
     <form autocomplete="off">
-      <!-- Subir carpeta -->
-      <label class="btn btn-primary" for="folder-input">Subir archivos</label>
-      <input type="file" id="folder-input" webkitdirectory multiple style="display:none;">
+      <!-- etiqueta que actúa como botón de subir archivos-->
+      <label for="folder-input" class="btn-primary" aria-hidden="false">Subir archivos</label>
+
+      <!-- input oculto para seleccionar carpeta/archivos -->
+      <input id="folder-input" type="file" webkitdirectory directory multiple />
+
       <span id="file-count">0 archivos cargados</span>
 
       <!-- BPM -->
@@ -54,12 +58,13 @@
       <br>
 
 
+
       <!-- INICIAR -->
       <div class="form-group">
         <button
           id="start-button"
           type="button"
-          class="btn btn-primary btn-lg btn-block"
+          class="btn-primary"
           onclick="start()">
           Iniciar
         </button>
