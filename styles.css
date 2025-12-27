@@ -85,6 +85,18 @@ textarea.form-control {
    BOTONES PRINCIPALES (clase compartida)
    Usar .btn-primary en <button> y en <label> (o mantener label.btn)
 ====================================================== */
+
+/* Asegurar comportamiento consistente en móviles */
+button,
+label.btn,
+.btn,
+.btn-primary {
+  -webkit-appearance: none;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
 .btn-primary,
 label.btn {
   width: 100%;
@@ -106,6 +118,21 @@ label.btn {
 .btn-primary:active,
 label.btn:active {
   transform: scale(0.98);
+}
+
+/* Forzar violeta también en focus / active (móviles a veces muestran highlight azul) */
+.btn-primary:focus,
+label.btn:focus,
+button:focus,
+.btn:focus,
+.btn-primary:active,
+label.btn:active,
+button:active,
+.btn:active {
+  background: #9a6dfc; /* violeta más oscuro */
+  color: #121212;
+  outline: none;
+  box-shadow: none;
 }
 
 /* Hover: cambiar a violeta al pasar el ratón */
